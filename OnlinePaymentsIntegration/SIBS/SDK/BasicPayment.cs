@@ -18,37 +18,20 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             this.paymentType = (PaymentType)Enum.Parse(typeof(PaymentType),paymentType);
             authentication = new Authentication(entityId, bearer);
         }
-        // Constructor of Basic Payment given integer amount and PaymentType enum
-        public BasicPayment(int amount, string  currency, PaymentType paymentType, string entityId, string bearer) {
-            this.amount = amount.ToString();
-            this.currency = currency;
-            this.paymentType = paymentType;
-            authentication = new Authentication(entityId, bearer);
-        }
-        // Constructor of Basic Payment given integer amount and PaymentType enum and merchantId string
-        public BasicPayment(int amount, string currency, PaymentType paymentType, string entityId, string bearer, string merchantId) {
-            this.amount = amount.ToString();
-            this.currency = currency;
-            this.paymentType = paymentType;
-            authentication = new Authentication(entityId, bearer,merchantId);
-        }
-        // Constructor of Basic Payment given integer amount and PaymentType enum and merchantId string and currency by default is EUR
-        public BasicPayment(int amount, PaymentType paymentType, string entityId, string merchantId, string bearer) {
-            this.amount = amount.ToString();
-            currency = "EUR";
-            this.paymentType = paymentType;
-            authentication = new Authentication(entityId, bearer, merchantId);
-        }
+        
         // Constructor of Basic Payment given only strings and merchantId string and currency by default is EUR
-        public BasicPayment(string amount, string paymentType, string entityId, string bearer) {
+        public BasicPayment(string amount, string paymentType, string entityId, string bearer, string currency, string merchantId) {
             this.amount = amount;
-            currency = "EUR";
+            this.currency = currency;
             this.paymentType = (PaymentType)Enum.Parse(typeof(PaymentType), paymentType);
-            authentication = new Authentication(entityId, bearer);
+            authentication = new Authentication(entityId, bearer,merchantId);
+
         }
 
         // Return the amount
         public string getAmount { get { return amount; } }
+
+        public string getBearer { get { return authentication.getBearer; } }
 
         // Return the string for checkout request
         public string dataForPaymentBasic {

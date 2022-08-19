@@ -190,6 +190,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SIBS\Exceptions\OnlinePaymentComunicationException.cs" />
     <Compile Include="SIBS\SDK\Authentication.cs" />
     <Compile Include="SIBS\SDK\BasicPayment.cs" />
     <Compile Include="SIBS\SDK\CheckoutRequest.cs" />
