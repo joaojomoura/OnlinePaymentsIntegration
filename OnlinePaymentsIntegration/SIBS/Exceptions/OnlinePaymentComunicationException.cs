@@ -8,11 +8,12 @@ namespace OnlinePaymentsIntegration.SIBS.Exceptions
     [Serializable]
     public class OnlinePaymentComunicationException : Exception
     {
+        
         public OnlinePaymentComunicationException() {
 
         }
         public OnlinePaymentComunicationException(string errorCode, string errorDescription)
-            : base(String.Format("Tente novamente mais tarde:\nCodigo{0}\nDescricao:{1}", errorCode,errorDescription)) {
+            : base(String.Format("Erro:\nCodigo{0}\nDescricao:{1}", errorCode,errorDescription)) {
             
         }
     }

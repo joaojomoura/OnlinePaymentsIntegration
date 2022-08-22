@@ -28,6 +28,7 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
 
         }
 
+
         // Return the amount
         public string getAmount { get { return amount; } }
 

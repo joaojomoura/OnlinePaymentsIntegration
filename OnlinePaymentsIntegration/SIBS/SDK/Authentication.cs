@@ -28,6 +28,9 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             this.bearer = "Bearer " + bearer;
             this.merchantTransactionId = merchantId;
         }
+        public Authentication(string entityId) {
+            this.entityId = entityId;
+        }
 
         public string getEntityId {
             get { return "entityId=" + entityId; }

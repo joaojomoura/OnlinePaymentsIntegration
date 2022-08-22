@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<PaymentMethods>
+  <PaymentMethod ID="0" Name="Cartao"/>
+  <PaymentMethod ID="1" Name="Multibanco"/>
+  <PaymentMethod ID="2" Name="MBWAY"/>
+</PaymentMethods>
