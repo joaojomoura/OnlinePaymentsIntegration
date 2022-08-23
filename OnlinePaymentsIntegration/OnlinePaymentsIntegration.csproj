@@ -192,6 +192,8 @@
     <Compile Include="SIBS\SDK\Authentication.cs" />
     <Compile Include="SIBS\SDK\BasicPayment.cs" />
     <Compile Include="SIBS\SDK\CheckoutRequestCopyAndPay.cs" />
+    <Compile Include="SIBS\SDK\MbwayPayment.cs" />
+    <Compile Include="SIBS\SDK\MultibancoPayment.cs" />
     <Compile Include="SIBS\SDK\PaymentBrand.cs" />
     <Compile Include="SIBS\SDK\PaymentType.cs" />
     <Compile Include="SIBS\SDK\ResponseRequestCopyAndPay.cs" />

@@ -19,8 +19,8 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             authentication = new Authentication(entityId, bearer);
         }
         
-        // Constructor of Basic Payment given only strings and merchantId string and currency by default is EUR
-        public BasicPayment(string amount, string paymentType, string entityId, string bearer, string currency, string merchantId) {
+        // Constructor of Basic Payment given  merchantId string 
+        public BasicPayment(string amount, string currency, string paymentType, string entityId, string bearer, string merchantId) {
             this.amount = amount;
             this.currency = currency;
             this.paymentType = (PaymentType)Enum.Parse(typeof(PaymentType), paymentType);
@@ -35,7 +35,7 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
         public string getBearer { get { return authentication.getBearer; } }
 
         // Return the string for checkout request
-        public string dataForPaymentBasic {
+        public virtual string dataForPaymentBasic {
             get { return authentication.getEntityId + 
                     "&amount=" + amount +
                     "&currency=" + currency +
@@ -43,7 +43,7 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
         }
 
         // Return the string for checkout request with merchant Id
-        public string dataForPaymentBasicwithMerchantId {
+        public virtual string dataForPaymentBasicwithMerchantId {
             get {
                 return authentication.getEntityId +
                   "&amount=" + amount +
@@ -53,7 +53,7 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             }
         }
 
-        public string dataForPaymentBasicforTest {
+        public virtual string dataForPaymentBasicforTest {
             get {
                 return authentication.getEntityId +
                   "&amount=" + amount +
@@ -64,7 +64,7 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             }
         }
 
-        public string dataForPaymentBasicwithMerchantIdforTest {
+        public virtual string dataForPaymentBasicwithMerchantIdforTest {
             get {
                 return authentication.getEntityId +
                   "&amount=" + amount +
