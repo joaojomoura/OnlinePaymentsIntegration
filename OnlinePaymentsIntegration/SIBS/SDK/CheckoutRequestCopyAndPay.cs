@@ -13,18 +13,26 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
     public class CheckoutRequestCopyAndPay
     {
         private string readAllJson = string.Empty;
+        private string multibancoEntity = "25002";
         private BasicPayment basicPayment;
         private bool merchantIdNeed = false;
-        public string setURLLive { get; set; }
-        public string setURLTest { get; set; }
+        public string setURLLive = "https://test.oppwa.com/v1/checkouts"; 
+        public string setURLTest = "https://test.oppwa.com/v1/checkouts";
 
-        // Construtor without merchantId
-        public CheckoutRequestCopyAndPay(string amount, string currency, string paymentType, string entityId, string bearer) {
-            basicPayment = new BasicPayment(amount, currency, paymentType, entityId, bearer);
+        // Construtor card without merchantId
+        public CheckoutRequestCopyAndPay(string amount, string currency, string paymentType, string entityId, string bearer,PaymentBrand brand) {
+            if(checkPaymentBrand(brand))
+                basicPayment = new BasicPayment(amount, currency, paymentType, entityId, bearer);
+            else
+                basicPayment = new MultibancoPayment(amount, currency, paymentType, entityId, bearer, multibancoEntity);
+
         }
-        // Constructor with merchantId
-        public CheckoutRequestCopyAndPay(string amount, string currency, string paymentType, string entityId, string bearer, string merchantId) {
-            basicPayment = new BasicPayment(amount, currency, paymentType, entityId, bearer, merchantId);
+        // Constructor card with merchantId
+        public CheckoutRequestCopyAndPay(string amount, string currency, string paymentType, string entityId, string bearer, string merchantId, PaymentBrand brand) {
+            if(checkPaymentBrand(brand))
+                basicPayment = new BasicPayment(amount, currency, paymentType, entityId, bearer, merchantId);
+            else
+                basicPayment = new MultibancoPayment(amount, currency, paymentType, entityId, bearer, merchantId, multibancoEntity);
             merchantIdNeed = true;
         }
 
@@ -100,5 +108,12 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
         }
 
         public string getReadAllJson { get { return readAllJson; } }
+
+        public bool checkPaymentBrand(PaymentBrand brand) {
+            if (brand == PaymentBrand.VISA || brand == PaymentBrand.MASTER || brand == PaymentBrand.MAESTRO
+                || brand == PaymentBrand.MBWAY)
+                return true;
+            return false;
+        }
     }
 }

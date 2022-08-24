@@ -25,6 +25,7 @@ namespace OnlinePaymentsIntegration
             country = "PT";
             initialTransactionTime = DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffzzz");
             endTransactionTime = DateTime.Now.AddMinutes(10).ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffzzz");
+            
         }
 
         public override string dataForPaymentBasic => base.dataForPaymentBasic + "&billing.country=" + country

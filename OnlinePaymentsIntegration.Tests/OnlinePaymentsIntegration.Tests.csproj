@@ -61,6 +61,7 @@
     <Compile Include="BasicPaymentTest.cs" />
     <Compile Include="MultibancoPaymentTest.cs" />
     <Compile Include="MbwayPaymentTest.cs" />
+    <Compile Include="CheckoutRequestTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
