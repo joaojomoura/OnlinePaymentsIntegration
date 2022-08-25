@@ -6,6 +6,6 @@ using System.Web;
 namespace OnlinePaymentsIntegration.SIBS.SDK
 {
     public enum PaymentType{
-        PA,DB,CD,CP,RV,RF,RC
+        PA,DB,CD,CP,RV,RF,RC,PURS
     }
 }

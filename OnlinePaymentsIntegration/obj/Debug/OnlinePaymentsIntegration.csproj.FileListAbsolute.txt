@@ -119,3 +119,11 @@ C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\es
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\ja\DevExpress.Office.v21.1.Core.resources.dll
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\ru\DevExpress.Office.v21.1.Core.resources.dll
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\obj\Debug\OnlinePaymentsIntegration.dll.licenses
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\System.Net.Http.Formatting.dll
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\System.Web.Http.dll
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\System.Web.Http.WebHost.dll
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\System.Net.Http.Formatting.xml
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\System.Web.Http.xml
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\System.Web.Http.WebHost.xml
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\Decypher.dll
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\Decypher.pdb

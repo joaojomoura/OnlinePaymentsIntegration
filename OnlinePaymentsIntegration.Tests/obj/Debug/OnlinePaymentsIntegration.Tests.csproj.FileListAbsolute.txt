@@ -64,3 +64,9 @@ C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration.Tests\
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration.Tests\bin\Debug\es\DevExpress.Pdf.v21.1.Core.resources.dll
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration.Tests\bin\Debug\ja\DevExpress.Pdf.v21.1.Core.resources.dll
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration.Tests\bin\Debug\ru\DevExpress.Pdf.v21.1.Core.resources.dll
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration.Tests\bin\Debug\System.Web.Http.dll
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration.Tests\bin\Debug\System.Net.Http.Formatting.dll
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration.Tests\bin\Debug\System.Web.Http.xml
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration.Tests\bin\Debug\System.Net.Http.Formatting.xml
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration.Tests\bin\Debug\Decypher.dll
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration.Tests\bin\Debug\Decypher.pdb

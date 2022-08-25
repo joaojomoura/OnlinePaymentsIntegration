@@ -8,39 +8,47 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
 {
     public class Authentication
     {
-        private readonly string userId, password, entityId, bearer, merchantTransactionId;
+        private readonly string xIBMClient,bearer, merchantTransactionId, terminalId, multibancoEntity;
 
-        //public Authentication(string userId, string password, string entityId){
+        //public Authentication(string userId, string password, string xIBMClient){
             
         //    this.userId = userId;
-        //    this.entityId = entityId;
+        //    this.xIBMClient = xIBMClient;
         //    this.password = password;
         //}
 
         
-        public Authentication (string entityId, string bearer){
-            this.entityId = entityId;
+        public Authentication (string xIBMClient, string bearer, string terminalId, string multibancoEntity){
+            this.xIBMClient = xIBMClient;
             this.bearer = "Bearer " + bearer;
+            this.terminalId = terminalId;
+            this.multibancoEntity = multibancoEntity;
         }
 
-        public Authentication(string entityId, string bearer, string merchantId) {
-            this.entityId = entityId;
+        public Authentication(string xIBMClient, string bearer, string terminalId, string multibancoEntity, string merchantId) {
+            this.xIBMClient = xIBMClient;
             this.bearer = "Bearer " + bearer;
             this.merchantTransactionId = merchantId;
+            this.terminalId = terminalId;
+            this.multibancoEntity = multibancoEntity;
         }
-        public Authentication(string entityId) {
-            this.entityId = entityId;
+        public Authentication(string xIBMClient) {
+            this.xIBMClient = xIBMClient;
         }
 
-        public string getEntityId {
-            get { return "entityId=" + entityId; }
+        public string getxIBMClient {
+            get { return xIBMClient; }
         }
 
         public string getBearer {
             get { return bearer; }
         }
 
-        public string getmerchantId { get { return "&merchantTransactionId=" + merchantTransactionId; } }
+        public string getmerchantTransactionId { get { return "Order: " + merchantTransactionId; } }
+
+        public string getTerminalId { get { return terminalId; } }
+
+        public string getmultibancoEntity { get { return multibancoEntity; } }
 
 
     }
