@@ -18,18 +18,42 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
         private bool merchantIdNeed = false;
         public string setURLLive = "https://test.oppwa.com/v1/checkouts"; 
         public string setURLTest = "https://spg.qly.site1.sibs.pt/api/v1/payments";
+        UrlConfigure urlConfigure;
 
-        // Construtor card without merchantId
+        /// <summary>
+        /// Constructor without Merchant Transaction ID
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <param name="currency"></param>
+        /// <param name="ClientId"></param>
+        /// <param name="bearer"></param>
+        /// <param name="terminalId"></param>
+        /// <param name="multibancoEntity"></param>
+        /// <param name="customer"></param>
         public CheckoutRequestCopyAndPay(string amount, string currency, string ClientId, string bearer, string terminalId,string multibancoEntity, CustomerInfo customer) {
             basicPayment = new BasicPayment(amount, currency, ClientId, bearer, terminalId, multibancoEntity, customer);
         }
-        // Constructor card with merchantId
+
+        /// <summary>
+        /// Constructor with Merchant Transaction ID
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <param name="currency"></param>
+        /// <param name="ClientId"></param>
+        /// <param name="bearer"></param>
+        /// <param name="terminalId"></param>
+        /// <param name="multibancoEntity"></param>
+        /// <param name="merchantTransactionId"></param>
+        /// <param name="customer"></param>
         public CheckoutRequestCopyAndPay(string amount, string currency, string ClientId, string bearer, string terminalId,string multibancoEntity, string merchantTransactionId, CustomerInfo customer) { 
             basicPayment = new BasicPayment(amount, currency, ClientId, bearer, terminalId, multibancoEntity, merchantTransactionId, customer);    
              merchantIdNeed = true;
         }
 
-        // Checkout request for live production
+        /// <summary>
+        /// Checkout request for live production
+        /// </summary>
+        /// <returns>Dictionary of the checkout request</returns>
         public Dictionary<string, dynamic> getCheckoutRequest() {
             Dictionary<string, dynamic> checkoutData;
             
@@ -57,7 +81,10 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             }
             return checkoutData;   
         }
-        //Checkout request for test production
+        /// <summary>
+        /// Checkout request for test production
+        /// </summary>
+        /// <returns>Dictionary of the checkout request</returns>
         public Dictionary<string, dynamic> getCheckoutRequestForTests() {
             Dictionary<string, dynamic> checkoutData;
             
@@ -86,7 +113,11 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             }
             return checkoutData;
         }
-
+        /// <summary>
+        /// Returns the transaction ID
+        /// </summary>
+        /// <param name="checkoutData"></param>
+        /// <returns>TransactionId</returns>
         public string getTransactionId (Dictionary<string,dynamic> checkoutData) {
             var getResultCode = checkoutData["returnStatus"]["statusCode"];
             if (!getResultCode.Equals("000"))
@@ -94,7 +125,11 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
                                                     checkoutData["returnStatus"]["statusMsg"]);
             return checkoutData["transactionID"];
         }
-
+        /// <summary>
+        /// Returns Transaction Signature
+        /// </summary>
+        /// <param name="checkoutData"></param>
+        /// <returns>TransactionSignature</returns>
         public string getTransactionSignature (Dictionary<string, dynamic> checkoutData) {
             var getResultCode = checkoutData["returnStatus"]["statusCode"];
             if (!getResultCode.Equals("000"))
@@ -102,7 +137,11 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
                                                     checkoutData["returnStatus"]["statusMsg"]);
             return checkoutData["transactionSignature"];
         }
-
+        /// <summary>
+        /// Returns Form Context
+        /// </summary>
+        /// <param name="checkoutData"></param>
+        /// <returns>formContext</returns>
         public string getFormContext(Dictionary<string, dynamic> checkoutData) {
             var getResultCode = checkoutData["returnStatus"]["statusCode"];
             if (!getResultCode.Equals("000"))
@@ -110,7 +149,11 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
                                                     checkoutData["returnStatus"]["statusMsg"]);
             return checkoutData["formContext"];
         }
-
+        /// <summary>
+        /// One way to print the JSON, its buggy
+        /// </summary>
+        /// <param name="getCheckoutRequest"></param>
+        /// <returns></returns>
         public string getCheckoutRequestComplete(Dictionary<string, dynamic> getCheckoutRequest) {
             string response = "";
             foreach (KeyValuePair<string, dynamic> kvp in getCheckoutRequest) {
@@ -118,7 +161,9 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             }
             return response;
         }
-
+        /// <summary>
+        /// Returns the result checkout JSON in a string
+        /// </summary>
         public string getReadAllJson { get { return readAllJson; } }
 
         public bool checkPaymentBrand(PaymentBrand brand) {

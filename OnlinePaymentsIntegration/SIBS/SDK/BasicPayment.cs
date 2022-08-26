@@ -13,15 +13,35 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
         private string currentDate = DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'");
         private string expirationDate = DateTime.Now.AddDays(1).ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'");
 
-        // Constructor of Basic Payment given only strings
+        
+        /// <summary>
+        /// Constructor of Basic Payment without merchant transaction ID
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <param name="currency"></param>
+        /// <param name="ClientId"></param>
+        /// <param name="bearer"></param>
+        /// <param name="terminalId"></param>
+        /// <param name="multibancoEntity"></param>
+        /// <param name="customer"></param>
         public BasicPayment(string amount, string currency, string ClientId, string bearer, string terminalId, string multibancoEntity, CustomerInfo customer) {
             this.amount = amount;
             this.currency = currency;
             authentication = new Authentication(ClientId, bearer, terminalId, multibancoEntity);
             this.customer = customer;
         }
-        
-        // Constructor of Basic Payment given  merchantId string 
+
+        /// <summary>
+        /// Constructor of Basic Payment with merchant transaction ID
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <param name="currency"></param>
+        /// <param name="ClientId"></param>
+        /// <param name="bearer"></param>
+        /// <param name="terminalId"></param>
+        /// <param name="multibancoEntity"></param>
+        /// <param name="merchantTransactionId"></param>
+        /// <param name="customer"></param>
         public BasicPayment(string amount, string currency, string ClientId, string bearer, string terminalId, string multibancoEntity, string merchantTransactionId, CustomerInfo customer) {
             this.amount = amount;
             this.currency = currency;
@@ -30,14 +50,22 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
         }
 
 
-        // Return the amount
+        /// <summary>
+        /// Return the amount
+        /// </summary>
         public string getAmount { get { return amount; } }
-
+        /// <summary>
+        /// Return Bearer
+        /// </summary>
         public string getBearer { get { return authentication.getBearer; } }
-
+        /// <summary>
+        /// Return ClientID
+        /// </summary>
         public string getClientId { get { return authentication.getxIBMClientId; } }
 
-        // Return the string for checkout request
+        /// <summary>
+        /// Return JSON Body for payment in live production without Merchant Transaction ID
+        /// </summary>
         public virtual string dataForPaymentBasic {
             get { return  "{\n\"merchant\": {\n" +
                                 "\"terminalId\": " + authentication.getTerminalId + ",\n" +
@@ -95,7 +123,10 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             }
         }
 
-        // Return the string for checkout request with merchant Id
+
+        /// <summary>
+        /// Return JSON Body for payment in live production with Merchant Transaction ID
+        /// </summary>
         public virtual string dataForPaymentBasicwithMerchantTransactionId {
             get {
                 return "{\n\"merchant\": {\n" +
@@ -153,7 +184,9 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
                        "}\n}";
             }
         }
-
+        /// <summary>
+        /// Return JSON Body for payment in test production without Merchant Transaction ID
+        /// </summary>
         public virtual string dataForPaymentBasicforTest {
             get {
                 return "{\n\"merchant\": {\n" +
@@ -211,7 +244,9 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
                        "}\n}";
             }
         }
-
+        /// <summary>
+        /// Return JSON Body for payment in test production with Merchant Transaction ID
+        /// </summary>
         public virtual string dataForPaymentBasicwithMerchantTransactionIdforTest {
             get {
                 return "{\n\"merchant\": {\n" +

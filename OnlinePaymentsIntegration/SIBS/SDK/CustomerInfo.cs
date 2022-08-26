@@ -8,8 +8,16 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
     public class CustomerInfo
     {
         private string clientName, clientEmail;
+        
         public Address shippingAddress = new Address(), billingAddress = new Address();
-
+        /// <summary>
+        /// Constructor for the customer info. 
+        /// 
+        /// Use shippingAddress and billingAddress to change 
+        /// the values of each address
+        /// </summary>
+        /// <param name="clientName"></param>
+        /// <param name="clientEmail"></param>
         public CustomerInfo(string clientName, string clientEmail) {
             this.clientName = clientName;
             this.clientEmail = clientEmail;
