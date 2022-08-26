@@ -125,5 +125,3 @@ C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\Sy
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\System.Net.Http.Formatting.xml
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\System.Web.Http.xml
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\System.Web.Http.WebHost.xml
-C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\Decypher.dll
-C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\Decypher.pdb

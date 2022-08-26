@@ -10,34 +10,35 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
 {
     public class ResponseRequestCopyAndPay
     {
-        
+
         private Authentication authentication;
-        private string entityId, bearer, readAllJson;
-        private string checkoutId;
+        private string clientId, bearer, readAllJson;
+        private string transactionId;
         public string getReadAllJson { get { return readAllJson; } }
         public string setBaseURLLive { get; set; }
         public string setBaseURLTest { get; set; }
-        
+
         // Constructor given the entity, bearer and checkoutId
-        public ResponseRequestCopyAndPay(string entityId,string bearer, string checkoutId) {
-            authentication = new Authentication(entityId,bearer);
-            this.entityId = authentication.getEntityId;
+        public ResponseRequestCopyAndPay(string clientId, string bearer, string transactionId) {
+            authentication = new Authentication(clientId, bearer);
+            this.clientId = authentication.getxIBMClientId;
             this.bearer = authentication.getBearer;
-            this.checkoutId = checkoutId;
+            this.transactionId = transactionId;
         }
 
         public string urlBaseToCompletePayment(string baseUrl) {
-            return baseUrl + "/v1/checkouts/" + checkoutId + "/payment?";
+            return baseUrl + "/api/v1/payments/" + transactionId + "/status";
         }
 
         // get the response payment data for live production
-        public Dictionary <string, dynamic> getResponseRequest () {
+        public Dictionary<string, dynamic> getResponseRequest() {
             Dictionary<string, dynamic> responseData;
-            
-            string url = urlBaseToCompletePayment(setBaseURLLive) + entityId;
+
+            string url = urlBaseToCompletePayment(setBaseURLLive);
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
             request.Method = "GET";
             request.Headers["Authorization"] = bearer;
+            request.Headers["X-IBM-Client-Id"] = clientId;
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse()) {
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
@@ -54,10 +55,11 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
         public Dictionary<string, dynamic> getResponseRequestForTest() {
             Dictionary<string, dynamic> responseData;
 
-            string url = urlBaseToCompletePayment(setBaseURLTest) + entityId;
+            string url = urlBaseToCompletePayment(setBaseURLTest);
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
             request.Method = "GET";
             request.Headers["Authorization"] = bearer;
+            request.Headers["X-IBM-Client-Id"] = clientId;
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse()) {
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
@@ -73,13 +75,13 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
 
         public string getResponseRequestCompleteText(Dictionary<string, dynamic> getResponse) {
             string response = "";
-            foreach(KeyValuePair<string,dynamic> kvp in getResponse) {
+            foreach (KeyValuePair<string, dynamic> kvp in getResponse) {
                 response += kvp;
             }
             return response;
         }
 
-        
+
 
 
     }

@@ -8,36 +8,32 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
 {
     public class Authentication
     {
-        private readonly string xIBMClient,bearer, merchantTransactionId, terminalId, multibancoEntity;
+        private readonly string xIBMClientId,bearer, merchantTransactionId, terminalId, multibancoEntity;
 
-        //public Authentication(string userId, string password, string xIBMClient){
-            
-        //    this.userId = userId;
-        //    this.xIBMClient = xIBMClient;
-        //    this.password = password;
-        //}
-
+     
+        public Authentication(string xIBMClientId, string bearer) {
+            this.xIBMClientId = xIBMClientId;
+            this.bearer = bearer;
+        }
         
-        public Authentication (string xIBMClient, string bearer, string terminalId, string multibancoEntity){
-            this.xIBMClient = xIBMClient;
+        public Authentication (string xIBMClientId, string bearer, string terminalId, string multibancoEntity){
+            this.xIBMClientId = xIBMClientId;
             this.bearer = "Bearer " + bearer;
             this.terminalId = terminalId;
             this.multibancoEntity = multibancoEntity;
         }
 
-        public Authentication(string xIBMClient, string bearer, string terminalId, string multibancoEntity, string merchantId) {
-            this.xIBMClient = xIBMClient;
+        public Authentication(string xIBMClientId, string bearer, string terminalId, string multibancoEntity, string merchantTransactionId) {
+            this.xIBMClientId = xIBMClientId;
             this.bearer = "Bearer " + bearer;
-            this.merchantTransactionId = merchantId;
+            this.merchantTransactionId = merchantTransactionId;
             this.terminalId = terminalId;
             this.multibancoEntity = multibancoEntity;
         }
-        public Authentication(string xIBMClient) {
-            this.xIBMClient = xIBMClient;
-        }
+      
 
-        public string getxIBMClient {
-            get { return xIBMClient; }
+        public string getxIBMClientId {
+            get { return xIBMClientId; }
         }
 
         public string getBearer {

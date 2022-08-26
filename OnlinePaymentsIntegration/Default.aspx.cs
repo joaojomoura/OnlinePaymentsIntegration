@@ -10,25 +10,64 @@ namespace OnlinePaymentsIntegration
 {
     public partial class Default : System.Web.UI.Page
     {
-        public string CheckoutId { get; set; }
-        public string paymentBrand { get; set; }
+        public string TransactionId { get; set; }
+        public string FormContext { get; set; }
+        public string FormConfig { get; set; }
+        public string FormStyle { get; set; }
+        public string Signature { get; set; }
+        
+
+        private string amount;
+
+        private string urlToRedirect = "http://localhost:50893/Status.aspx";
+
         protected void Page_Load(object sender, EventArgs e) {
-            CheckoutId = Request.QueryString["id"];
-            var getBrand = Request.QueryString["brand"];
-            paymentBrand = getBrandName(getBrand);
+            TransactionId = Request.QueryString["id"];
+            FormContext = Request.QueryString["context"];
+            Signature = Request.QueryString["signature"];
+            amount = Request.QueryString["amount"];
         }
 
         private string getBrandName(string brandChosen) {
             switch (brandChosen) {
                 case "1":
-                    return PaymentBrand.SIBS_MULTIBANCO.ToString();
+                    return PaymentBrand.REFERENCE.ToString();
                 case "2":
                     return PaymentBrand.MBWAY.ToString();
                 default:
-                    return PaymentBrand.VISA.ToString() + " " +
-                        PaymentBrand.MASTER.ToString() + " " +
-                        PaymentBrand.MAESTRO.ToString();
+                    return PaymentBrand.CARD.ToString();
             }
+        }
+
+        private void formconfigText() {
+            FormConfig = "{\"paymentMethodList\": [],\n" +
+                "\"amount\": { \"value\": " + amount +", \"currency: \"EUR\"\"},\n" +
+                "\"language\": \"pt\",\n" +
+                "\"redirectUrl\": \"" + urlToRedirect + "\",\n" +
+                "\"customerData\": null }";
+        }
+
+        private void formstyleText() {
+            FormStyle = @"{ ""transaction"": {
+                            {
+                                ""layout"": 'default',
+                            ""theme"": 'default',
+                            ""color"": {
+                                 ""primary"": """",
+                            ""secondary"": """",
+                            ""border"": """",
+                            ""surface"": """",
+                            ""header"": {
+                                ""text"": """",
+                            ""background"": """"
+                            },
+                            ""body"": {
+                                ""text"": """",
+                            ""background"": """"
+                            }
+                              },
+                            ""font"": """"
+                            } ";
         }
     }
 }

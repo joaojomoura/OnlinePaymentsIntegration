@@ -4,12 +4,12 @@ using OnlinePaymentsIntegration.SIBS.SDK;
 
 namespace OnlinePaymentsIntegration.Tests
 {
-    [TestClass]
+    //[TestClass]
     public class MultibancoPaymentTest
     {
-        [TestMethod]
+       // [TestMethod]
         public void ValidTextforMultibanco() {
-            string amount = "10.00", entityId = "8a8294185332bbe601533754724914d9", currency = "EUR",
+           /* string amount = "10.00", entityId = "8a8294185332bbe601533754724914d9", currency = "EUR",
                paymentType = "PA", merchantId = "geracaoMB1", bearer = "OGE4Mjk0MTg1MzMyYmJlNjAxNTMzNzU0NzZjMzE1Mjd8RzV3UDVUekY1aw==",
                multibancoEntity = "25002";
 
@@ -44,7 +44,7 @@ namespace OnlinePaymentsIntegration.Tests
             Assert.AreEqual(expectedMultibancoPaymentforLive,multibancoPayment.dataForPaymentBasic,"Multibanco - Live sem merchant nao sao iguais");
             Assert.AreEqual(expectedMultibancoPaymentforTest, multibancoPayment.dataForPaymentBasicforTest, "Multibanco - Test sem merchant nao sao iguais");
             Assert.AreEqual(expectedMultibancoPaymentforLiveMerchant, multibancoPaymentwithMerchant.dataForPaymentBasicwithMerchantId, "Multibanco - Live com merchant nao sao iguais");
-            Assert.AreEqual(expectedMultibancoPaymentforTestMerchant, multibancoPaymentwithMerchant.dataForPaymentBasicwithMerchantIdforTest, "Multibanco - Test com merchant nao sao iguais");
+            Assert.AreEqual(expectedMultibancoPaymentforTestMerchant, multibancoPaymentwithMerchant.dataForPaymentBasicwithMerchantIdforTest, "Multibanco - Test com merchant nao sao iguais");*/
 
         }
     }

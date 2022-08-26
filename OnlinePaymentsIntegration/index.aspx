@@ -18,10 +18,10 @@
             <dx:ASPxButton ID="ShowJsonButton" runat="server" OnClick="ShowJsonButton_Click" Text="Mostrar JSON">
             </dx:ASPxButton>
             <br />
-            <dx:ASPxRadioButtonList ID="paymentTypeChosen" runat="server" DataSourceID="XmlDataSource1" ValueField="ID" TextField="Name">
+            <%--<dx:ASPxRadioButtonList ID="paymentTypeChosen" runat="server" DataSourceID="XmlDataSource1" ValueField="ID" TextField="Name">
                 <Border BorderColor="White" />
             </dx:ASPxRadioButtonList>
-            <asp:XmlDataSource ID="XmlDataSource1" runat="server" DataFile="~/SIBS/XML/PaymentMethods.xml" XPath="//PaymentMethod"></asp:XmlDataSource>
+            <asp:XmlDataSource ID="XmlDataSource1" runat="server" DataFile="~/SIBS/XML/PaymentMethods.xml" XPath="//PaymentMethod"></asp:XmlDataSource>--%>
             <dx:ASPxButton ID="PaymentButton" runat="server" OnClick="PaymentButton_Click" Text="Pagar">
             </dx:ASPxButton>
             <br />

@@ -42,24 +42,6 @@ namespace OnlinePaymentsIntegration
         protected global::DevExpress.Web.ASPxButton ShowJsonButton;
 
         /// <summary>
-        /// paymentTypeChosen control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxRadioButtonList paymentTypeChosen;
-
-        /// <summary>
-        /// XmlDataSource1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.XmlDataSource XmlDataSource1;
-
-        /// <summary>
         /// PaymentButton control.
         /// </summary>
         /// <remarks>

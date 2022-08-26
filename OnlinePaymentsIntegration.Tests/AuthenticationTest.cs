@@ -10,28 +10,37 @@ namespace OnlinePaymentsIntegration.Tests
         [TestMethod]
         public void ValidAuthentication() {
             //examples for test
-            string merchantId = "merchant";
-            string entityId = "123456789";
+            string merchantTransactionId = "merchant";
+            string clientId = "123456789";
             string bearer = "apapaosop1234";
+            string multibancoEntity = "1234";
+            string terminalId = "22222";
             //what i expect
-            string expectedMerchantId = "&merchantTransactionId=merchant";
-            string expectedEntityId = "entityId=123456789";
+            string expectedMerchantTransactionId = "Order: merchant";
+            string expectedClientId = "123456789";
             string expectedBearer = "Bearer apapaosop1234";
+            string expectedMultibancoEntity = "1234";
+            string expectedTerminalId = "22222";
 
             //constructor without merchantID
-            Authentication authenticationWithoutMerchant = new Authentication(entityId,bearer);
+            Authentication authenticationWithoutMerchant = new Authentication(clientId,bearer,terminalId,multibancoEntity);
             //constructor with merchantID
-            Authentication authenticationWithMerchant = new Authentication(entityId,bearer,merchantId);
+            Authentication authenticationWithMerchant = new Authentication(clientId,bearer,terminalId,multibancoEntity, merchantTransactionId);
 
             // Without Merchant
             Assert.AreEqual(expectedBearer,authenticationWithoutMerchant.getBearer,"Sem merchant - Bearer nao sao iguais");
-            Assert.AreEqual(expectedEntityId, authenticationWithoutMerchant.getEntityId, "Sem merchant - Entity nao sao iguais");
+            Assert.AreEqual(expectedClientId, authenticationWithoutMerchant.getxIBMClientId, "Sem merchant - ClientID nao sao iguais");
+            Assert.AreEqual(expectedTerminalId, authenticationWithoutMerchant.getTerminalId, "Sem merchant - terminalID nao sao iguais");
+            Assert.AreEqual(expectedMultibancoEntity, authenticationWithoutMerchant.getmultibancoEntity, "Sem merchant - multibancoEntity nao sao iguais");
+
 
 
             // With Merchant
-            Assert.AreEqual(expectedEntityId, authenticationWithMerchant.getEntityId, "Com merchant - Entity nao sao iguais");
             Assert.AreEqual(expectedBearer, authenticationWithMerchant.getBearer, "Com merchant - Bearer nao sao iguais");
-            Assert.AreEqual(expectedMerchantId, authenticationWithMerchant.getmerchantId, "Com merchant - Merchant nao sao iguais");
+            Assert.AreEqual(expectedClientId, authenticationWithMerchant.getxIBMClientId, "Com merchant - ClientID nao sao iguais");
+            Assert.AreEqual(expectedTerminalId, authenticationWithMerchant.getTerminalId, "Com merchant - terminalID nao sao iguais");
+            Assert.AreEqual(expectedMultibancoEntity, authenticationWithMerchant.getmultibancoEntity, "Com merchant - multibancoEntity nao sao iguais");
+            Assert.AreEqual(expectedMerchantTransactionId, authenticationWithMerchant.getmerchantTransactionId, "Com merchant - merchantTransactionID nao sao iguais");
         }
     }
 }

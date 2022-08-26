@@ -4,12 +4,12 @@ using OnlinePaymentsIntegration.SIBS.SDK;
 
 namespace OnlinePaymentsIntegration.Tests
 {
-    [TestClass]
+    //[TestClass]
     public class MbwayPaymentTest
     {
-        [TestMethod]
+       // [TestMethod]
         public void ValidTextMbwayPayment() {
-            string amount = "10.00", entityId = "8a8294185332bbe601533754724914d9", currency = "EUR",
+            /*string amount = "10.00", entityId = "8a8294185332bbe601533754724914d9", currency = "EUR",
                paymentType = "DB", merchantId = "merchant", bearer = "OGE4Mjk0MTg1MzMyYmJlNjAxNTMzNzU0NzZjMzE1Mjd8RzV3UDVUekY1aw==";
 
 
@@ -35,7 +35,7 @@ namespace OnlinePaymentsIntegration.Tests
             Assert.AreEqual(expectedMbwayPaymentforLive, mbwayPayment.dataForPaymentBasic, "MBWAY - Live sem merchant nao sao iguais");
             Assert.AreEqual(expectedMbwayPaymentforLivewithMerchant, mbwayPaymentwithMerchant.dataForPaymentBasicwithMerchantId, "MBWAY - Live com merchant nao sao iguais");
             Assert.AreEqual(expectedMbwayPaymentforTest, mbwayPayment.dataForPaymentBasicforTest, "MBWAY - Test sem merchant nao sao iguais");
-            Assert.AreEqual(expectedMbwayPaymentforTestwithMerchant, mbwayPaymentwithMerchant.dataForPaymentBasicwithMerchantIdforTest, "MBWAY - Test com merchant nao sao iguais");
+            Assert.AreEqual(expectedMbwayPaymentforTestwithMerchant, mbwayPaymentwithMerchant.dataForPaymentBasicwithMerchantIdforTest, "MBWAY - Test com merchant nao sao iguais");*/
 
 
 

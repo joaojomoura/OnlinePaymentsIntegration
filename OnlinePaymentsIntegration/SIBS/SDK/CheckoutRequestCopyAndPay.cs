@@ -13,27 +13,20 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
     public class CheckoutRequestCopyAndPay
     {
         private string readAllJson = string.Empty;
-        private string multibancoEntity = "25002";
+        
         private BasicPayment basicPayment;
         private bool merchantIdNeed = false;
         public string setURLLive = "https://test.oppwa.com/v1/checkouts"; 
-        public string setURLTest = "https://test.oppwa.com/v1/checkouts";
+        public string setURLTest = "https://spg.qly.site1.sibs.pt/api/v1/payments";
 
         // Construtor card without merchantId
-        public CheckoutRequestCopyAndPay(string amount, string currency, string paymentType, string entityId, string bearer,PaymentBrand brand) {
-            if(checkPaymentBrand(brand))
-                basicPayment = new BasicPayment(amount, currency, paymentType, entityId, bearer);
-            else
-                basicPayment = new MultibancoPayment(amount, currency, paymentType, entityId, bearer, multibancoEntity);
-
+        public CheckoutRequestCopyAndPay(string amount, string currency, string ClientId, string bearer, string terminalId,string multibancoEntity, CustomerInfo customer) {
+            basicPayment = new BasicPayment(amount, currency, ClientId, bearer, terminalId, multibancoEntity, customer);
         }
         // Constructor card with merchantId
-        public CheckoutRequestCopyAndPay(string amount, string currency, string paymentType, string entityId, string bearer, string merchantId, PaymentBrand brand) {
-            if(checkPaymentBrand(brand))
-                basicPayment = new BasicPayment(amount, currency, paymentType, entityId, bearer, merchantId);
-            else
-                basicPayment = new MultibancoPayment(amount, currency, paymentType, entityId, bearer, merchantId, multibancoEntity);
-            merchantIdNeed = true;
+        public CheckoutRequestCopyAndPay(string amount, string currency, string ClientId, string bearer, string terminalId,string multibancoEntity, string merchantTransactionId, CustomerInfo customer) { 
+            basicPayment = new BasicPayment(amount, currency, ClientId, bearer, terminalId, multibancoEntity, merchantTransactionId, customer);    
+             merchantIdNeed = true;
         }
 
         // Checkout request for live production
@@ -42,13 +35,14 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             
             string dataToSendWithPost = basicPayment.dataForPaymentBasic;
             if (merchantIdNeed)
-                dataToSendWithPost = basicPayment.dataForPaymentBasicwithMerchantId;
+                dataToSendWithPost = basicPayment.dataForPaymentBasicwithMerchantTransactionId;
             var url = setURLLive;
             byte[] buffer = Encoding.ASCII.GetBytes(dataToSendWithPost);
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
             request.Method = "POST";
             request.Headers["Authorization"] = basicPayment.getBearer;
-            request.ContentType = "application/x-www-form-urlencoded";
+            request.Headers["X-IBM-Client-Id"] = basicPayment.getClientId;
+            request.ContentType = "application/json";
             Stream PostData = request.GetRequestStream();
             PostData.Write(buffer, 0, buffer.Length);
             PostData.Close();
@@ -69,13 +63,15 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             
             string dataToSendWithPost = basicPayment.dataForPaymentBasicforTest;
             if (merchantIdNeed)
-                dataToSendWithPost = basicPayment.dataForPaymentBasicwithMerchantIdforTest;
+                dataToSendWithPost = basicPayment.dataForPaymentBasicwithMerchantTransactionIdforTest;
             var url = setURLTest;
             byte[] buffer = Encoding.ASCII.GetBytes(dataToSendWithPost);
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
             request.Method = "POST";
             request.Headers["Authorization"] = basicPayment.getBearer;
-            request.ContentType = "application/x-www-form-urlencoded";
+            request.Headers["X-IBM-Client-Id"] = basicPayment.getClientId;
+            request.ContentType = "application/json";
+            //request.ContentType = "application/x-www-form-urlencoded";
             Stream PostData = request.GetRequestStream();
             PostData.Write(buffer, 0, buffer.Length);
             PostData.Close();
@@ -91,12 +87,28 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             return checkoutData;
         }
 
-        public string getCheckoutId (Dictionary<string,dynamic> checkoutData) {
-            var getResultCode = checkoutData["result"]["code"];
-            if (!getResultCode.Equals("000.200.100"))
+        public string getTransactionId (Dictionary<string,dynamic> checkoutData) {
+            var getResultCode = checkoutData["returnStatus"]["statusCode"];
+            if (!getResultCode.Equals("000"))
                 throw new OnlinePaymentComunicationException(getResultCode,
-                                                    checkoutData["result"]["description"]);
-            return checkoutData["id"];
+                                                    checkoutData["returnStatus"]["statusMsg"]);
+            return checkoutData["transactionID"];
+        }
+
+        public string getTransactionSignature (Dictionary<string, dynamic> checkoutData) {
+            var getResultCode = checkoutData["returnStatus"]["statusCode"];
+            if (!getResultCode.Equals("000"))
+                throw new OnlinePaymentComunicationException(getResultCode,
+                                                    checkoutData["returnStatus"]["statusMsg"]);
+            return checkoutData["transactionSignature"];
+        }
+
+        public string getFormContext(Dictionary<string, dynamic> checkoutData) {
+            var getResultCode = checkoutData["returnStatus"]["statusCode"];
+            if (!getResultCode.Equals("000"))
+                throw new OnlinePaymentComunicationException(getResultCode,
+                                                    checkoutData["returnStatus"]["statusMsg"]);
+            return checkoutData["formContext"];
         }
 
         public string getCheckoutRequestComplete(Dictionary<string, dynamic> getCheckoutRequest) {
@@ -110,7 +122,7 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
         public string getReadAllJson { get { return readAllJson; } }
 
         public bool checkPaymentBrand(PaymentBrand brand) {
-            if (brand == PaymentBrand.VISA || brand == PaymentBrand.MASTER || brand == PaymentBrand.MAESTRO
+            if (brand == PaymentBrand.CARD
                 || brand == PaymentBrand.MBWAY)
                 return true;
             return false;
