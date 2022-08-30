@@ -236,7 +236,7 @@
     <Compile Include="SIBS\SDK\PaymentType.cs" />
     <Compile Include="SIBS\SDK\ResponseRequestCopyAndPay.cs" />
     <Compile Include="SIBS\SDK\SibsEnvironmentMode.cs" />
-    <Compile Include="SIBS\SDK\UrlConfigure.cs" />
+    <Compile Include="SIBS\SDK\transactionDataForForm.cs" />
     <Compile Include="Status.aspx.cs">
       <DependentUpon>Status.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

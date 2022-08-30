@@ -15,26 +15,26 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
         private string clientId, bearer, readAllJson;
         private string transactionId;
         public string getReadAllJson { get { return readAllJson; } }
-        public string setBaseURLLive { get; set; }
-        public string setBaseURLTest { get; set; }
+        private string requestGetURL;
 
         // Constructor given the entity, bearer and checkoutId
-        public ResponseRequestCopyAndPay(string clientId, string bearer, string transactionId) {
+        public ResponseRequestCopyAndPay(string redirectURL, string clientId, string bearer, string transactionId) {
             authentication = new Authentication(clientId, bearer);
             this.clientId = authentication.getxIBMClientId;
             this.bearer = authentication.getBearer;
             this.transactionId = transactionId;
+            this.requestGetURL = urlBaseToCompletePayment(redirectURL);
         }
 
         public string urlBaseToCompletePayment(string baseUrl) {
             return baseUrl + "/api/v1/payments/" + transactionId + "/status";
         }
 
-        // get the response payment data for live production
+        // get the response payment data
         public Dictionary<string, dynamic> getResponseRequest() {
             Dictionary<string, dynamic> responseData;
 
-            string url = urlBaseToCompletePayment(setBaseURLLive);
+            string url = requestGetURL;
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
             request.Method = "GET";
             request.Headers["Authorization"] = bearer;
@@ -51,26 +51,7 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             return responseData;
         }
 
-        // get the response payment data for tests
-        public Dictionary<string, dynamic> getResponseRequestForTest() {
-            Dictionary<string, dynamic> responseData;
-
-            string url = urlBaseToCompletePayment(setBaseURLTest);
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
-            request.Method = "GET";
-            request.Headers["Authorization"] = bearer;
-            request.Headers["X-IBM-Client-Id"] = clientId;
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse()) {
-                Stream dataStream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(dataStream);
-                readAllJson = reader.ReadToEnd();
-                var s = new JavaScriptSerializer();
-                responseData = s.Deserialize<Dictionary<string, dynamic>>(readAllJson);
-                reader.Close();
-                dataStream.Close();
-            }
-            return responseData;
-        }
+        
 
 
         public string getResponseRequestCompleteText(Dictionary<string, dynamic> getResponse) {

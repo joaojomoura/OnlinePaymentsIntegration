@@ -16,9 +16,9 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
         
         private BasicPayment basicPayment;
         private bool merchantIdNeed = false;
-        public string setURLLive = "https://test.oppwa.com/v1/checkouts"; 
-        public string setURLTest = "https://spg.qly.site1.sibs.pt/api/v1/payments";
-        UrlConfigure urlConfigure;
+        public string setURL;
+        
+       
 
         /// <summary>
         /// Constructor without Merchant Transaction ID
@@ -30,8 +30,9 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
         /// <param name="terminalId"></param>
         /// <param name="multibancoEntity"></param>
         /// <param name="customer"></param>
-        public CheckoutRequestCopyAndPay(string amount, string currency, string ClientId, string bearer, string terminalId,string multibancoEntity, CustomerInfo customer) {
+        public CheckoutRequestCopyAndPay(string url,string amount, string currency, string ClientId, string bearer, string terminalId,string multibancoEntity, CustomerInfo customer) {
             basicPayment = new BasicPayment(amount, currency, ClientId, bearer, terminalId, multibancoEntity, customer);
+            setURL = url;
         }
 
         /// <summary>
@@ -45,13 +46,14 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
         /// <param name="multibancoEntity"></param>
         /// <param name="merchantTransactionId"></param>
         /// <param name="customer"></param>
-        public CheckoutRequestCopyAndPay(string amount, string currency, string ClientId, string bearer, string terminalId,string multibancoEntity, string merchantTransactionId, CustomerInfo customer) { 
+        public CheckoutRequestCopyAndPay(string url, string amount, string currency, string ClientId, string bearer, string terminalId,string multibancoEntity, string merchantTransactionId, CustomerInfo customer) { 
             basicPayment = new BasicPayment(amount, currency, ClientId, bearer, terminalId, multibancoEntity, merchantTransactionId, customer);    
              merchantIdNeed = true;
+            setURL = url;
         }
 
         /// <summary>
-        /// Checkout request for live production
+        /// Checkout request 
         /// </summary>
         /// <returns>Dictionary of the checkout request</returns>
         public Dictionary<string, dynamic> getCheckoutRequest() {
@@ -60,7 +62,7 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             string dataToSendWithPost = basicPayment.dataForPaymentBasic;
             if (merchantIdNeed)
                 dataToSendWithPost = basicPayment.dataForPaymentBasicwithMerchantTransactionId;
-            var url = setURLLive;
+            var url = setURL;
             byte[] buffer = Encoding.ASCII.GetBytes(dataToSendWithPost);
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
             request.Method = "POST";
@@ -81,38 +83,7 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             }
             return checkoutData;   
         }
-        /// <summary>
-        /// Checkout request for test production
-        /// </summary>
-        /// <returns>Dictionary of the checkout request</returns>
-        public Dictionary<string, dynamic> getCheckoutRequestForTests() {
-            Dictionary<string, dynamic> checkoutData;
-            
-            string dataToSendWithPost = basicPayment.dataForPaymentBasicforTest;
-            if (merchantIdNeed)
-                dataToSendWithPost = basicPayment.dataForPaymentBasicwithMerchantTransactionIdforTest;
-            var url = setURLTest;
-            byte[] buffer = Encoding.ASCII.GetBytes(dataToSendWithPost);
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
-            request.Method = "POST";
-            request.Headers["Authorization"] = basicPayment.getBearer;
-            request.Headers["X-IBM-Client-Id"] = basicPayment.getClientId;
-            request.ContentType = "application/json";
-            //request.ContentType = "application/x-www-form-urlencoded";
-            Stream PostData = request.GetRequestStream();
-            PostData.Write(buffer, 0, buffer.Length);
-            PostData.Close();
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse()) {
-                Stream dataStream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(dataStream);
-                readAllJson = reader.ReadToEnd();
-                var s = new JavaScriptSerializer();
-                checkoutData = s.Deserialize<Dictionary<string, dynamic>>(readAllJson);
-                reader.Close();
-                dataStream.Close();
-            }
-            return checkoutData;
-        }
+        
         /// <summary>
         /// Returns the transaction ID
         /// </summary>

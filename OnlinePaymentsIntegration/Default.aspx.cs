@@ -11,21 +11,23 @@ namespace OnlinePaymentsIntegration
     public partial class Default : System.Web.UI.Page
     {
         public string TransactionId { get; set; }
-        public string FormContext { get; set; }
-        public string FormConfig { get; set; }
-        public string FormStyle { get; set; }
+        public string formContext { get; set; }
+        public string formConfig { get; set; }
+        public string formStyle { get; set; }
         public string Signature { get; set; }
         
 
         private string amount;
 
-        private string urlToRedirect = "http://localhost:50893/Status.aspx";
+        private string urlToRedirect = "https://localhost:44314/Status.aspx";
 
         protected void Page_Load(object sender, EventArgs e) {
-            TransactionId = Request.QueryString["id"];
-            FormContext = Request.QueryString["context"];
-            Signature = Request.QueryString["signature"];
-            amount = Request.QueryString["amount"];
+            TransactionId = TransactionDataForForm.transactionID;
+            formContext = TransactionDataForForm.formContext;
+            Signature = TransactionDataForForm.transactionSignature;
+            amount = TransactionDataForForm.amount;
+            formconfigText();
+            formstyleText();
         }
 
         private string getBrandName(string brandChosen) {
@@ -40,34 +42,26 @@ namespace OnlinePaymentsIntegration
         }
 
         private void formconfigText() {
-            FormConfig = "{\"paymentMethodList\": [],\n" +
-                "\"amount\": { \"value\": " + amount +", \"currency: \"EUR\"\"},\n" +
-                "\"language\": \"pt\",\n" +
+            formConfig = "{\"paymentMethodList\": [],\n" +
+                "\"amount\": { \"value\": " + amount +", \"currency\": \"EUR\"},\n" +
+                "\"language\": \"en\",\n" +
                 "\"redirectUrl\": \"" + urlToRedirect + "\",\n" +
                 "\"customerData\": null }";
         }
 
         private void formstyleText() {
-            FormStyle = @"{ ""transaction"": {
-                            {
-                                ""layout"": 'default',
-                            ""theme"": 'default',
-                            ""color"": {
-                                 ""primary"": """",
-                            ""secondary"": """",
-                            ""border"": """",
-                            ""surface"": """",
-                            ""header"": {
-                                ""text"": """",
-                            ""background"": """"
-                            },
-                            ""body"": {
-                                ""text"": """",
-                            ""background"": """"
-                            }
-                              },
-                            ""font"": """"
-                            } ";
+            formStyle = @"{
+   ""paymentMethodList"":[
+      
+   ],
+   ""amount"":{
+                ""value"":10,
+      ""currency"":""EUR""
+   },
+   ""language"":""en"",
+   ""redirectUrl"":""https://localhost:44314/Status.aspx"",
+   ""customerData"":null
+}";
         }
     }
 }

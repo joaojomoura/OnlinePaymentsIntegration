@@ -90,11 +90,11 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
                                     "\"initialDatetime\": \"" + currentDate + "\",\n" +
                                     "\"finalDatetime\": \"" + expirationDate + "\",\n" +
                                     "\"maxAmount\": {\n" +
-                                        "\"value\": 500,\n" +
+                                        "\"value\": " + amount + ",\n" +
                                         "\"currency\": \"" + currency.ToUpper() + "\"\n" +
                                         "},\n" +
                                     "\"minAmount\": {\n" +
-                                        "\"value\": 5,\n" +
+                                        "\"value\": " + amount + ",\n" +
                                         "\"currency\": \"" + currency.ToUpper() + "\"\n" +
                                         "},\n" +
                                 "\"entity\": \"" + authentication.getmultibancoEntity + "\"\n" +
@@ -152,11 +152,11 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
                                     "\"initialDatetime\": \"" + currentDate + "\",\n" +
                                     "\"finalDatetime\": \"" + expirationDate + "\",\n" +
                                     "\"maxAmount\": {\n" +
-                                        "\"value\": 500,\n" +
+                                        "\"value\": " + amount + ",\n" +
                                         "\"currency\": \"" + currency.ToUpper() + "\"\n" +
                                         "},\n" +
                                     "\"minAmount\": {\n" +
-                                        "\"value\": 5,\n" +
+                                        "\"value\": " + amount + ",\n" +
                                         "\"currency\": \"" + currency.ToUpper() + "\"\n" +
                                         "},\n" +
                                 "\"entity\": \"" + authentication.getmultibancoEntity + "\"\n" +
@@ -212,11 +212,11 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
                                     "\"initialDatetime\": \"" + currentDate + "\",\n" +
                                     "\"finalDatetime\": \"" + expirationDate + "\",\n" +
                                     "\"maxAmount\": {\n" +
-                                        "\"value\": 500,\n" +
+                                        "\"value\": " + amount + ",\n" +
                                         "\"currency\": \"" + currency.ToUpper() + "\"\n" +
                                         "},\n" +
                                      "\"minAmount\": {\n" +
-                                        "\"value\": 5,\n" +
+                                        "\"value\": " + amount + ",\n" +
                                         "\"currency\": \"" + currency.ToUpper() + "\"\n" +
                                         "},\n" +
                                 "\"entity\": \"" + authentication.getmultibancoEntity + "\"\n" +
@@ -272,11 +272,11 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
                                     "\"initialDatetime\": \"" + currentDate + "\",\n" +
                                     "\"finalDatetime\": \"" + expirationDate + "\",\n" +
                                     "\"maxAmount\": {\n" +
-                                        "\"value\": 500,\n" +
+                                        "\"value\": " + amount + ",\n" +
                                         "\"currency\": \"" + currency.ToUpper() + "\"\n" +
                                         "},\n" +
                                     "\"minAmount\": {\n" +
-                                        "\"value\": 5,\n" +
+                                        "\"value\": " + amount + ",\n" +
                                         "\"currency\": \"" + currency.ToUpper() + "\"\n" +
                                         "},\n" +
                                 "\"entity\": \"" + authentication.getmultibancoEntity + "\"\n" +

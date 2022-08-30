@@ -8,6 +8,6 @@
 </head>
 <body>
     <script src="https://spg.qly.site1.sibs.pt/assets/js/widget.js?id=<%=TransactionId %>"></script>
-    <form class="paymentSPG" spg-context="<%=FormContext %>" spg-config="<%=FormConfig %>" spg-style="<%=FormStyle %>" spg-signature="<%=Signature %>""></form>
+    <form class="paymentSPG" spg-context="<%=formContext %>" spg-config="<%=formConfig %>" spg-style="<%=formStyle %>"></form>
 </body>
 </html>

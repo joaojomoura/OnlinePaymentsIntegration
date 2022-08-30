@@ -14,13 +14,13 @@ namespace OnlinePaymentsIntegration
         public string Result { get; set; }
         private ResponseRequestCopyAndPay responseRequestCopyAndPay;
         protected void Page_Load(object sender, EventArgs e) {
-           /* var checkoutId = Request.QueryString["id"];
-            responseRequestCopyAndPay = new ResponseRequestCopyAndPay("8ac7a4c87e899ee3017e8c789a9f088b", "OGE4Mjk0MTc2MTUxNjEwODAxNjE2YzI0M2RkNjNlNzF8NnA1Y2Z0eXBzUQ==",checkoutId);
-            responseRequestCopyAndPay.setBaseURLTest = "https://test.oppwa.com";
-            var responseData = responseRequestCopyAndPay.getResponseRequestForTest();
-            var errorInitialText = new ErrorCodes();
-            Result = errorInitialText.getErrorCodeDescription(responseData["result"]["code"]);
-            Result += "\n" + responseRequestCopyAndPay.getReadAllJson;*/
+            var checkoutId = Request.QueryString["id"];
+            var URL = "https://spg.qly.site1.sibs.pt";
+            var clientId = "8b5aa2bc-53ef-4b55-adbb-929aac3ebdda";
+            var bearer = "0276b80f950fb446c6addaccd121abfbbb.eyJlIjoiMTk3Njk1NjM3NjExNyIsInJvbGVzIjoiU1BHX01BTkFHRVIiLCJ0b2tlbkFwcERhdGEiOiJ7XCJtY1wiOlwiOTk5OTk5OVwiLFwidGNcIjpcIjU2MzQyXCJ9IiwiaSI6IjE2NjEzMzcxNzYxMTciLCJpcyI6Imh0dHBzOi8vcWx5LnNpdGUxLnNzby5zeXMuc2licy5wdC9hdXRoL3JlYWxtcy9RTFkuTUVSQ0guUE9SVDEiLCJ0eXAiOiJCZWFyZXIiLCJpZCI6IjRGQURXVGdjUWE1NjJlZTQ4ODdkOTA0MTg0YTUyNWQyYjFjYzBlNjAzYiJ9.6e531784385b9211a2dde32bd354bac64bf87e40cd32da95713c29e5e7e89a097e2b5f4044a4f5ee10f13b404f616c77922e775f03e7a89a3ac59bebf07d82";
+            responseRequestCopyAndPay = new ResponseRequestCopyAndPay(URL,clientId,bearer,checkoutId);
+            var response = responseRequestCopyAndPay.getResponseRequest();
+            Result = responseRequestCopyAndPay.getReadAllJson;
         }
     }
 }
