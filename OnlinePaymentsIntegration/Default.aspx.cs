@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Text;
 
 namespace OnlinePaymentsIntegration
 {
@@ -19,8 +20,8 @@ namespace OnlinePaymentsIntegration
 
         private string amount;
 
-        private string urlToRedirect = "https://localhost:44314/Status.aspx";
-
+        private string urlToRedirect = HttpUtility.HtmlEncode("https://localhost:44314/Status.aspx");
+        
         protected void Page_Load(object sender, EventArgs e) {
             TransactionId = TransactionDataForForm.transactionID;
             formContext = TransactionDataForForm.formContext;
@@ -42,26 +43,35 @@ namespace OnlinePaymentsIntegration
         }
 
         private void formconfigText() {
-            formConfig = "{\"paymentMethodList\": [],\n" +
+            formConfig = HttpUtility.HtmlEncode("{\"paymentMethodList\": [],\n" +
                 "\"amount\": { \"value\": " + amount +", \"currency\": \"EUR\"},\n" +
-                "\"language\": \"en\",\n" +
-                "\"redirectUrl\": \"" + urlToRedirect + "\",\n" +
-                "\"customerData\": null }";
+                "\"language\": \"pt\",\n" +
+                "\"redirectUrl\": \"" + urlToRedirect+ "\",\n" +
+                "\"customerData\": null }");
         }
 
         private void formstyleText() {
-            formStyle = @"{
-   ""paymentMethodList"":[
-      
-   ],
-   ""amount"":{
-                ""value"":10,
-      ""currency"":""EUR""
-   },
-   ""language"":""en"",
-   ""redirectUrl"":""https://localhost:44314/Status.aspx"",
-   ""customerData"":null
-}";
+            formStyle = HttpUtility.HtmlEncode(@"{
+   ""transaction"":{
+      ""layout"":""default"",
+      ""theme"":""default"",
+      ""color"":{
+                ""primary"":"""",
+         ""secondary"":"""",
+         ""border"":"""",
+         ""surface"":"""",
+         ""header"":{
+                    ""text"":"""",
+            ""background"":""""
+         },
+         ""body"":{
+                    ""text"":"""",
+            ""background"":""""
+         }
+            },
+      ""font"":""""
+   }
+    }");
         }
     }
 }

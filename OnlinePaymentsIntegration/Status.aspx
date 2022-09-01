@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Status.aspx.cs" Inherits="OnlinePaymentsIntegration.Status" %>
+﻿<%@ Page Async="true" Language="C#" AutoEventWireup="true" CodeBehind="Status.aspx.cs" Inherits="OnlinePaymentsIntegration.Status" %>
 
 <!DOCTYPE html>
 
@@ -9,7 +9,18 @@
 <body>
     <form id="form1" runat="server">
         <div>
+            <br />
+            <br />
+            <br />
+            <%=Pagamento %>
+            <br />
+            <br />
+            <br />
             <%=Result %>
+            <br />
+            <br />
+            <br />
+            <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Button" />
         </div>
     </form>
 </body>

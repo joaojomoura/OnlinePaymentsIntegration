@@ -18,7 +18,7 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
         /// <param name="bearer"></param>
         public Authentication(string xIBMClientId, string bearer) {
             this.xIBMClientId = xIBMClientId;
-            this.bearer = bearer;
+            this.bearer = "Bearer " + bearer;
         }
         /// <summary>
         /// ClientId = xIBMClientId

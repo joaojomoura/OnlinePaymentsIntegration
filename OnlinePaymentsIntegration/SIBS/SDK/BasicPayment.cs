@@ -181,7 +181,8 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
                                     "\"country\": \"" + customer.shippingAddress.country + "\"\n" +
                                     "}\n" +
                              "}\n" +
-                       "}\n}";
+                       "}\n" +
+                    "}";
             }
         }
         /// <summary>
