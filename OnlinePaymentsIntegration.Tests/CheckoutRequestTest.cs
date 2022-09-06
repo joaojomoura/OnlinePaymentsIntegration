@@ -35,7 +35,7 @@ namespace OnlinePaymentsIntegration.Tests
         public void TestInitialize() {
             var customer = initCustomer();
             checkout = new CheckoutRequestCopyAndPay(amount, currency, clientId, bearer, terminalId,multibancoEntity, merchantTransactionId, customer);
-            checkoutRequest = checkout.getCheckoutRequestForTests();
+            //checkoutRequest = checkout.getCheckoutRequestForTests();
         }
 
         [TestMethod]

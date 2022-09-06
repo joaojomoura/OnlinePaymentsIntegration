@@ -1,4 +1,4 @@
-﻿<%@ Page Async="true" Language="C#" AutoEventWireup="true" CodeBehind="Status.aspx.cs" Inherits="OnlinePaymentsIntegration.Status" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Status.aspx.cs" Inherits="OnlinePaymentsIntegration.Status" %>
 
 <!DOCTYPE html>
 
@@ -9,6 +9,7 @@
 <body>
     <form id="form1" runat="server">
         <div>
+            <%--Async="true"--%>
             <br />
             <br />
             <br />

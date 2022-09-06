@@ -69,7 +69,6 @@ C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\Ne
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\Antlr3.Runtime.pdb
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\Microsoft.AspNet.FriendlyUrls.xml
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\obj\Debug\OnlinePaymentsIntegration.csproj.AssemblyReference.cache
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\obj\Debug\OnlinePaymentsIntegration.csproj.CoreCompileInputs.cache
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\obj\Debug\OnlinePaymentsIntegration.csproj.CopyComplete
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\obj\Debug\OnlinePaymentsIntegration.dll
@@ -125,3 +124,4 @@ C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\Sy
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\System.Net.Http.Formatting.xml
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\System.Web.Http.xml
 C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\bin\System.Web.Http.WebHost.xml
+C:\Projectos_Inovasis\OnlinePaymentsIntegration\OnlinePaymentsIntegration\obj\Debug\OnlinePaymentsIntegration.csproj.AssemblyReference.cache
