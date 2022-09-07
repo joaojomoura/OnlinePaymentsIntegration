@@ -16,21 +16,59 @@ namespace OnlinePaymentsIntegration
     {
         public string Result { get; set; }
         public string Pagamento { get; set; }
+        public string Entidade { get; set; }
+        public string Referencia { get; set; }
+        public string Montante { get; set; }
+
+
+
+
         private string checkoutId;
         private ResponseRequestCopyAndPay responseRequestCopyAndPay;
         private Dictionary<string, dynamic> getResponse;
         private SqlConnection sqlcon;
         protected void Page_Load(object sender, EventArgs e) {
-          
 
-           /* checkoutId = Request.QueryString["id"];
-            var URL = "https://spg.qly.site1.sibs.pt";
-            var clientId = "8b5aa2bc-53ef-4b55-adbb-929aac3ebdda";
-            var bearer = "0276b80f950fb446c6addaccd121abfbbb.eyJlIjoiMTk3Njk1NjM3NjExNyIsInJvbGVzIjoiU1BHX01BTkFHRVIiLCJ0b2tlbkFwcERhdGEiOiJ7XCJtY1wiOlwiOTk5OTk5OVwiLFwidGNcIjpcIjU2MzQyXCJ9IiwiaSI6IjE2NjEzMzcxNzYxMTciLCJpcyI6Imh0dHBzOi8vcWx5LnNpdGUxLnNzby5zeXMuc2licy5wdC9hdXRoL3JlYWxtcy9RTFkuTUVSQ0guUE9SVDEiLCJ0eXAiOiJCZWFyZXIiLCJpZCI6IjRGQURXVGdjUWE1NjJlZTQ4ODdkOTA0MTg0YTUyNWQyYjFjYzBlNjAzYiJ9.6e531784385b9211a2dde32bd354bac64bf87e40cd32da95713c29e5e7e89a097e2b5f4044a4f5ee10f13b404f616c77922e775f03e7a89a3ac59bebf07d82";
-            responseRequestCopyAndPay = new ResponseRequestCopyAndPay(URL, clientId, bearer, checkoutId);
-            var response = responseRequestCopyAndPay.getResponseRequest();
-            Result = responseRequestCopyAndPay.getReadAllJson;*/
-            //RegisterAsyncTask(new PageAsyncTask(StartTest));
+
+
+            if (!IsPostBack) {
+                var URL = "https://spg.qly.site1.sibs.pt";
+                try {
+                    sqlcon = new SqlConnection(@"Data Source=sql.inovanet.pt,3433;Initial Catalog=pizzarte_testes;User ID=pizzartenet;Password=qjaabsuf6969$;encrypt=true;trustServerCertificate=true");
+                    sqlcon.Open();
+                }
+                catch {
+                    sqlcon.Close();
+                }
+
+                string query = @"SELECT ClientId, TransactionId FROM TRANSACTIONS WITH (NOLOCK) WHERE ClientId = '" + TransactionDataForForm.clientId +
+                   "' AND TransactionId = '" + TransactionDataForForm.transactionID + "'";
+                SqlDataReader sqlDR = null;
+                bool transactionExist = false;
+                try {
+                    SqlCommand SqlExecute0 = new SqlCommand(query, sqlcon);
+                    sqlDR = SqlExecute0.ExecuteReader();
+                    if (sqlDR.Read()) {
+                        transactionExist = true;
+                    }
+                    sqlDR.Close();
+
+                    if (transactionExist) {
+                        responseRequestCopyAndPay = new ResponseRequestCopyAndPay(URL, TransactionDataForForm.clientIdOnSibs, TransactionDataForForm.bearer, TransactionDataForForm.transactionID);
+                        getResponse = responseRequestCopyAndPay.getResponseRequest();
+                        SaveDataFromGet(getResponse);
+                    }
+                }
+                catch (SqlException ex) {
+                    if (sqlDR != null) {
+                        if (sqlDR.IsClosed == false)
+                            sqlDR.Close();
+                    }
+                }
+                getRefMultibanco(getResponse);
+                sqlcon.Close();
+            }
+
         }
 
         /*private async Task StartTest() {
@@ -65,21 +103,13 @@ namespace OnlinePaymentsIntegration
         }*/
 
         protected void Button1_Click(object sender, EventArgs e) {
-            try {
-                sqlcon = new SqlConnection(@"Data Source=sql.inovanet.pt,3433;Initial Catalog=pizzarte_testes;User ID=pizzartenet;Password=qjaabsuf6969$;encrypt=true;trustServerCertificate=true");
-                sqlcon.Open();
-            }
-            catch {
-                sqlcon.Close();
-            }
+            
             var URL = "https://spg.qly.site1.sibs.pt";
-            var clientId = "8b5aa2bc-53ef-4b55-adbb-929aac3ebdda";
+            var clientIdonSIBS = "8b5aa2bc-53ef-4b55-adbb-929aac3ebdda";
             var bearer = "0276b80f950fb446c6addaccd121abfbbb.eyJlIjoiMTk3Njk1NjM3NjExNyIsInJvbGVzIjoiU1BHX01BTkFHRVIiLCJ0b2tlbkFwcERhdGEiOiJ7XCJtY1wiOlwiOTk5OTk5OVwiLFwidGNcIjpcIjU2MzQyXCJ9IiwiaSI6IjE2NjEzMzcxNzYxMTciLCJpcyI6Imh0dHBzOi8vcWx5LnNpdGUxLnNzby5zeXMuc2licy5wdC9hdXRoL3JlYWxtcy9RTFkuTUVSQ0guUE9SVDEiLCJ0eXAiOiJCZWFyZXIiLCJpZCI6IjRGQURXVGdjUWE1NjJlZTQ4ODdkOTA0MTg0YTUyNWQyYjFjYzBlNjAzYiJ9.6e531784385b9211a2dde32bd354bac64bf87e40cd32da95713c29e5e7e89a097e2b5f4044a4f5ee10f13b404f616c77922e775f03e7a89a3ac59bebf07d82";
-            responseRequestCopyAndPay = new ResponseRequestCopyAndPay(URL, clientId, bearer, TransactionDataForForm.transactionID);
+            responseRequestCopyAndPay = new ResponseRequestCopyAndPay(URL, clientIdonSIBS, bearer, TransactionDataForForm.transactionID);
             var response = responseRequestCopyAndPay.getResponseRequest();
             Result = responseRequestCopyAndPay.getReadAllJson;
-            if (checkIfTransactionIsOnDataBase(response))
-                SaveDataFromPost(response);
         }
 
         /*private async Task<bool> getPaymentStatusUntilSucess() {
@@ -135,8 +165,8 @@ namespace OnlinePaymentsIntegration
             return true;
         }
 
-        private void SaveDataFromPost(Dictionary<string, dynamic> checkoutData) {
-
+        private void SaveDataFromGet(Dictionary<string, dynamic> checkoutData) {
+            
             SqlTransaction transactionlocal = sqlcon.BeginTransaction();
             if (checkoutData.ContainsKey("paymentStatus")) {
 
@@ -187,5 +217,60 @@ namespace OnlinePaymentsIntegration
             }
         }
 
+        private void getRefMultibanco(Dictionary<string, dynamic> checkoutData) {
+            if(checkoutData.ContainsKey("paymentReference")) {
+                Entidade = TransactionDataForForm.multibancoEntity;
+                Referencia = checkoutData["paymentReference"]["reference"];
+                Montante = TransactionDataForForm.amount;
+            }
+        }
+
+        //[System.Web.Services.WebMethod]
+        protected string getStatus() {
+            SqlConnection sqlcon1 = null;
+            try {
+                sqlcon1 = new SqlConnection(@"Data Source=sql.inovanet.pt,3433;Initial Catalog=pizzarte_testes;User ID=pizzartenet;Password=qjaabsuf6969$;encrypt=true;trustServerCertificate=true");
+                sqlcon1.Open();
+            }
+            catch {
+                sqlcon1.Close();
+            }
+            string status = "";
+            string query = @"SELECT ClientId, TransactionId FROM TRANSACTIONS WITH (NOLOCK) WHERE ClientId = '" + TransactionDataForForm.clientId +
+                "' AND TransactionId = '" + TransactionDataForForm.transactionID + "'";
+            SqlDataReader sqlDR = null;
+            try {
+                SqlCommand SqlExecute0 = new SqlCommand(query, sqlcon1);
+                sqlDR = SqlExecute0.ExecuteReader();
+                if (sqlDR.Read()) {
+                    status = sqlDR.GetString(sqlDR.GetOrdinal("Payment_Status")).ToUpper();
+
+                }
+                sqlDR.Close();
+                if (!status.Equals("SUCCESS"))
+                    throw new Exception();
+                return status;
+            }
+            catch (SqlException ex) {
+                if (sqlDR != null) {
+                    if (sqlDR.IsClosed == false)
+                        sqlDR.Close();
+                }
+                sqlcon1.Close();
+                return "erro";
+            }
+            catch (Exception) {
+                if (sqlDR != null) {
+                    if (sqlDR.IsClosed == false)
+                        sqlDR.Close();
+                }
+                sqlcon1.Close();
+                StatusPayment.Text = "err";
+                return "erro";
+            }
+            finally {
+                sqlcon1.Close();
+            }    
+        }
     }
 }

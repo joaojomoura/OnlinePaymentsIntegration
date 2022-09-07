@@ -12,15 +12,15 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
     {
 
         private Authentication authentication;
-        private string clientId, bearer, readAllJson;
+        private string clientIdonSIBS, bearer, readAllJson;
         private string transactionId;
         public string getReadAllJson { get { return readAllJson; } }
         private string requestGetURL;
 
         // Constructor given the entity, bearer and checkoutId
-        public ResponseRequestCopyAndPay(string redirectURL, string clientId, string bearer, string transactionId) {
-            authentication = new Authentication(clientId, bearer);
-            this.clientId = authentication.getxIBMClientId;
+        public ResponseRequestCopyAndPay(string redirectURL, string clientIdonSIBS, string bearer, string transactionId) {
+            authentication = new Authentication(clientIdonSIBS, bearer);
+            this.clientIdonSIBS = authentication.getxIBMClientId;
             this.bearer = authentication.getBearer;
             this.transactionId = transactionId;
             this.requestGetURL = urlBaseToCompletePayment(redirectURL);
@@ -38,7 +38,7 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
             request.Method = "GET";
             request.Headers["Authorization"] = bearer;
-            request.Headers["X-IBM-Client-Id"] = clientId;
+            request.Headers["X-IBM-Client-Id"] = clientIdonSIBS;
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse()) {
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);

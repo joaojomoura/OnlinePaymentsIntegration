@@ -193,11 +193,13 @@
     <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxTimer.js" />
     <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxWebForms.js" />
     <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxWebServices.js" />
+    <Content Include="Scripts\WebForms\script.js" />
     <Content Include="Scripts\WebForms\SmartNav.js" />
     <Content Include="Scripts\WebForms\TreeView.js" />
     <Content Include="Scripts\WebForms\WebForms.js" />
     <Content Include="Scripts\WebForms\WebParts.js" />
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
+    <Content Include="ServiceToUpdateAndSendToOriginalBD.aspx" />
     <Content Include="SIBS\XML\PaymentMethods.xml" />
     <Content Include="Status.aspx" />
     <Content Include="Web.config" />
@@ -225,6 +227,14 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SaveToBD\SaveForInitialTransaction.cs" />
+    <Compile Include="SaveToRealBD\SaveToRealBDMesa.cs" />
+    <Compile Include="ServiceToUpdateAndSendToOriginalBD.aspx.cs">
+      <DependentUpon>ServiceToUpdateAndSendToOriginalBD.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceToUpdateAndSendToOriginalBD.aspx.designer.cs">
+      <DependentUpon>ServiceToUpdateAndSendToOriginalBD.aspx</DependentUpon>
+    </Compile>
     <Compile Include="SIBS\Exceptions\ErrorCodes.cs" />
     <Compile Include="SIBS\Exceptions\OnlinePaymentComunicationException.cs" />
     <Compile Include="SIBS\SDK\AfterPaymentUtils.cs" />
