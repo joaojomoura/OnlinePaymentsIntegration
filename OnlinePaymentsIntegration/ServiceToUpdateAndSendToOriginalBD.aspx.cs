@@ -13,7 +13,7 @@ namespace OnlinePaymentsIntegration
         protected void Page_Load(object sender, EventArgs e) {
             SaveToRealBDMesa save = new SaveToRealBDMesa();
             save.checkTimeOfPendingTransaction();
-            
+            save.forEachTransactionNotProcessed();
               
         }
     }

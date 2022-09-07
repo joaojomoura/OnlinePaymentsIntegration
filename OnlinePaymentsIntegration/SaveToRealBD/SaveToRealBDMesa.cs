@@ -389,7 +389,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
             SqlConnection sqlGetTransactionsCon = new SqlConnection(connection);
             SqlConnection updateTransactionCon = new SqlConnection(connection);
             sqlGetTransactionsCon.Open();
-            string getTransactionsNotProcessed = "SELECT TransactionId FROM TRANSACTIONS WITH (NOLOCK) WHERE Processed = 0";
+            string getTransactionsNotProcessed = "SELECT * FROM TRANSACTIONS WITH (NOLOCK) WHERE Processed = 0 AND Payment_Status = 'Success'";
             SqlDataReader sqlReadTransactions = null;
             SqlCommand sqlExecuteTransactions = new SqlCommand(getTransactionsNotProcessed,sqlGetTransactionsCon);
             try {
