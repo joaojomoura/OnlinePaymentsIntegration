@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
@@ -17,9 +18,8 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
         private ResponseRequestCopyAndPay responseRequest;
         private Dictionary<string, dynamic> getResponse;
         private string connection = @"Data Source=sql.inovanet.pt,3433;Initial Catalog=pizzarte_testes;User ID=pizzartenet;Password=qjaabsuf6969$;encrypt=true;trustServerCertificate=true";
-
+        private string URL = "https://spg.qly.site1.sibs.pt";
         public void checkTimeOfPendingTransaction() {
-            var URL = "https://spg.qly.site1.sibs.pt";
             DateTime presentTime = DateTime.Now;
             
             //START CONNECTION TO BD
@@ -91,6 +91,78 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
             
         }
 
+        //Eliminar Waitings
+        public void checkTimeOfWaitingTransaction() {
+            DateTime presentTime = DateTime.Now;
+
+            //START CONNECTION TO BD
+            try {
+                sqlcon = new SqlConnection(connection);
+                sqlcon.Open();
+            }
+            catch {
+                sqlcon.Close();
+            }
+            DateTime expireDate = new DateTime();
+            string transactionId = "";
+
+            // GET THE PENDING TRANSACTIONS
+            string query = @"SELECT * FROM TRANSACTIONS WITH (NOLOCK) WHERE Payment_Status = 'Waiting'";
+            SqlDataReader sqlDR = null;
+            try {
+                SqlCommand SqlExecute0 = new SqlCommand(query, sqlcon);
+                sqlDR = SqlExecute0.ExecuteReader();
+                while (sqlDR.Read()) {
+                    expireDate = Convert.ToDateTime(sqlDR.GetString(sqlDR.GetOrdinal("Execution_End_Time"))).AddMinutes(5);
+                    transactionId = sqlDR.GetString(sqlDR.GetOrdinal("TransactionId"));
+                    if (sqlDR.GetString(sqlDR.GetOrdinal("Payment_Method")).Equals("REFERENCE")) {
+                        expireDate = Convert.ToDateTime(sqlDR.GetString(sqlDR.GetOrdinal("MBREF_ExpireDate")));
+                    }
+                    // IF THE TIME OF DATE IS LESSER THAN THE PRESENT GONNA UPDATE THE STATUS
+                    if (expireDate.CompareTo(presentTime) <= 0) {
+                        responseRequest = new ResponseRequestCopyAndPay(URL, TransactionDataForForm.clientIdOnSibs, TransactionDataForForm.bearer, transactionId);
+                        getResponse = responseRequest.getResponseRequest();
+
+                        string updateTransactionAfterTimeExpired = "UPDATE TRANSACTIONS SET Payment_Status = '" +
+                            getResponse["paymentStatus"] + "' WHERE TransactionId = '" + transactionId + "'";
+                        sqlcon1 = new SqlConnection(connection);
+                        sqlcon1.Open();
+                        SqlTransaction transactionlocal = sqlcon1.BeginTransaction();
+                        SqlDataReader sqlDR1 = null;
+                        try {
+                            SqlCommand SqlExecute1 = new SqlCommand(updateTransactionAfterTimeExpired, sqlcon1, transactionlocal);
+                            sqlDR1 = SqlExecute1.ExecuteReader();
+                            sqlDR1.Close();
+                            if ((transactionlocal != null))
+                                transactionlocal.Commit();
+                            sqlcon1.Close();
+                        }
+                        catch (SqlException ex) {
+                            if (sqlDR1 != null) {
+                                if (sqlDR1.IsClosed == false)
+                                    sqlDR1.Close();
+                            }
+                            transactionlocal.Rollback();
+                            sqlcon.Close();
+                            sqlcon1.Close();
+
+                        }
+                        //////////////////////////////////////////////////
+                    }
+                }
+                sqlDR.Close();
+            }
+            catch {
+                if (sqlDR != null) {
+                    if (sqlDR.IsClosed == false)
+                        sqlDR.Close();
+                }
+                sqlcon.Close();
+
+            }
+            sqlcon.Close();
+        }
+
         private void saveFromCopyBDtoRealBD(DataTable basketDetails, string transactionId, object amount, object payment_Method,
             object orderTime, object codigoCliente, object mailBasketBody, object observations) {
             string sSqlCod = string.Empty;
@@ -108,6 +180,9 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
             sqlcon.Open();
             SqlTransaction transactionlocal = null;
             transactionlocal = sqlcon.BeginTransaction();
+            SqlDataReader sqlDR1 = null;
+            SqlDataReader sqlDRmesas = null;
+            SqlDataReader sqlDR0 = null;
 
             try {
                 #region LANÇAMENTO FINAL NA MESA
@@ -118,7 +193,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                 querymesas = "SELECT codigo, descricao FROM IStk47000 WITH (NOLOCK) WHERE WEB=1"; //WHERE codigo='zzz'";// WHERE codigo not in('100','101','102','105') //FALTA retirar codigo do ZZZ
 
                 SqlCommand SqlExecute0 = new SqlCommand(querymesas, sqlconCli, transaction);
-                SqlDataReader sqlDRmesas = SqlExecute0.ExecuteReader();
+                sqlDRmesas = SqlExecute0.ExecuteReader();
                 bool encontroumesa = false;
 
                 while (sqlDRmesas.Read()) {
@@ -133,7 +208,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
 
                             //sqlcon.Open();
                             SqlCommand SqlExecute1 = new SqlCommand(TempQuery, sqlcon, transactionlocal);
-                            SqlDataReader sqlDR0 = SqlExecute1.ExecuteReader();
+                            sqlDR0 = SqlExecute1.ExecuteReader();
                             if (sqlDR0.Read()) {
                                 if (sqlDR0["Mesa"] != System.DBNull.Value) {
                                     sqlDR0.Close();
@@ -174,7 +249,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
 
                                     // sqlcon.Open();
                                     // transaction = sqlcon.BeginTransaction();
-                                    SqlDataReader sqlDR1 = null;
+                                    
 
                                     string TempQueryCreate = "";
                                     TempQueryCreate = "CREATE TABLE ##" + NomeTabelaTemporaria(9999, sMesa) + " (" + "CAIXA_" + 9999 + " INT PRIMARY KEY)";
@@ -190,11 +265,27 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
 
                                     encontroumesa = true;
 
+                                    //Mudar aqui para o codigo criado posteriormente de cada metodo de pagamento
+                                    int metododepagamento = 0;
+                                    switch (payment_Method) {
+                                        case "MBWAY":
+                                            metododepagamento = 1;
+                                            break;
+                                        case "REFERENCE":
+                                            metododepagamento = 2;
+                                            break;
+                                        case "CARD":
+                                            metododepagamento = 3;
+                                            break;
+
+                                    }
+
+
                                     //lança artigos na mesa e hora do levantamento
                                     string sSqlCabecalho = string.Empty;
                                     sSqlCabecalho = "UPDATE IStk47000 SET HoraAbertura=FORMAT(CAST(GETDATE() AS DATETIME), 'HH:mm'), Activa=1,TotalMesa=" + (amount.ToString()).Replace(",", ".") + ",";
                                     //sSqlCabecalho += "Situacao=3,Zona=0,NrPessoas=0, cliente='" + lbidcliente + "', formapagamento='" + metododepagamento + "', DataHoraEntrega='"+ Utils.DataBD1(DateTime.Now)+" "+ horalevantamento + "' ";
-                                    sSqlCabecalho += "Situacao=3,NrPessoas=0, cliente='" + codigoCliente + "', formapagamento='" + payment_Method + "', DataHoraEntrega='" + orderTime + "' ";
+                                    sSqlCabecalho += "Situacao=3,NrPessoas=0, cliente='" + codigoCliente + "', formapagamento='" + metododepagamento + "', DataHoraEntrega='" + orderTime + "' ";
                                     sSqlCabecalho += "WHERE Codigo='" + sMesa + "' and descricao='" + sdescricao + "'";
                                     SqlExecute3 = new SqlCommand(sSqlCabecalho, sqlcon, transactionlocal);
                                     sqlDR1 = SqlExecute3.ExecuteReader();
@@ -215,7 +306,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                                             "', " + row["PrecoUnitarioComIva"] + ", " + row["PrecoUnitario"] + ", " + row["Marcado"] + ", " + row["TaxaIva"] +
                                             ", " + row["DescontoLinha"] + ", " + row["DescontoLinhaDefeito"] + ", " + row["DescontoMaximoArtigo"] + 
                                             ", " + row["PrecoAgrupado"] + ", " + row["DescontoAgrupado"] + ", " + row["EstacaoSaldos"] + "," + row["TipoDesconto"] + ", " + row["ArtigoKit"] + ", " + row["QuantidadeImpressa"] + 
-                                            ", " + row["ArtigoPeso"] + ", '" + row["CodSincr"] + "', " + row["CodLinha"] + "', " + row["composto"] + ", " + row["TemPerfis"] + ", " + row["Com"] + ", " + row["Sem"] + ", " + row["Perfil"] + ", " + row["Predefinido"] + ", " + row["DescontoObrigatorio"] +
+                                            ", " + row["ArtigoPeso"] + ", '" + row["CodSincr"] + "', '" + row["CodLinha"] + "', " + row["composto"] + ", " + row["TemPerfis"] + ", " + row["Com"] + ", " + row["Sem"] + ", " + row["Perfil"] + ", " + row["Predefinido"] + ", " + row["DescontoObrigatorio"] +
                                             ", " + row["ArtigoDescritivo"] + ", '" + row["Descricao"] + "', '" + row["Seccoes"] + "', " + row["NrConsulta"] + ", '" + row["SerieConsulta"] + "', " + row["QtdConciliada"] +
                                             ", " + row["NrConsultaOrigem"] + ", '" + row["SerieConsultaOrigem"] + "', " + row["IncluirExtrasNaFactura"] + ", " + row["Armazem"] + ", " + row["Preceito"] + 
                                             ",'" + row["Data"] + "', '" + row["EspacoFiscal"] + "', '" + row["TipoImposto"] + "', " + row["MotivoDesconto"] + ")";
@@ -250,16 +341,18 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                             string sSql1 = string.Empty;
                             sSql1 = "SELECT Email FROM IStk470000 WITH (NOLOCK) WHERE cliente= " + codigoCliente;
                             SqlCommand SqlExecute3 = new SqlCommand(sSql1, sqlconCli);
-                            SqlDataReader sqlDR1 = SqlExecute3.ExecuteReader();
+                            SqlDataReader sqlDR3 = SqlExecute3.ExecuteReader();
                             
-                            if (sqlDR1.Read()) {
-                                if (sqlDR1["Email"] != System.DBNull.Value) {
-                                    msg1 = new MailMessage(getEmailAdministradorSite(), sqlDR1.GetString(sqlDR1.GetOrdinal("email"))); //FROM e to
+                            if (sqlDR3.Read()) {
+                                if (sqlDR3["Email"] != System.DBNull.Value) {
+                                    msg1 = new MailMessage(getEmailAdministradorSite(), sqlDR3.GetString(sqlDR3.GetOrdinal("email"))); //FROM e to
                                 }
                             }
-                            sqlDR1.Close();
+                            sqlDR3.Close();
 
+                            var cultureInfo = CultureInfo.GetCultureInfo("pt-PT");
                             
+
                             msg1.Subject = "Pizzarte";
                             msg1.IsBodyHtml = true;
                             msg1.Body = "<font face='Verdana, Arial, Helvetica, sans-serif' size='2' color='#000000'>";
@@ -272,7 +365,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                             msg1.Body += "<br/>Hora prevista para entrega: " + orderTime + "";
                             msg1.Body += "<br/><br/>";
                             msg1.Body += mailBasketBody + "<br/>";
-                            msg1.Body += "<b>Valor total:</b> " + amount + " €";
+                            msg1.Body += "<b>Valor total:</b> " + String.Format(cultureInfo, "{0:C} ", amount);
                             if (observations.ToString() != "")
                                 msg1.Body += "<br/><br/><b>Observações:</b> " + observations;
                             msg1.Body += "<br/>" + "<br/><br/><b>Pizzarte</b><br /><br />R.Engº Von Haffe, 27<br />3800-177 Aveiro, Portugal<br /><br /><a href=mailto:pizzarte@pizzarte.com>pizzarte@pizzarte.com</a><br/>(+351) 234 427 103";
@@ -327,18 +420,26 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
 
             }
             catch {
+                if (sqlDR1 != null || sqlDRmesas != null || sqlDR0 != null) {
+                    if (!sqlDR1.IsClosed)
+                        sqlDR1.Close();
+                    if (!sqlDRmesas.IsClosed)
+                        sqlDRmesas.Close();
+                    if (!sqlDR0.IsClosed)
+                        sqlDR0.Close();
+                }
                 transaction.Rollback();
                 transactionlocal.Rollback();
                 sqlcon.Close();
                 sqlconCli.Close();
 
                 //limpa temporaria
-                SqlDataReader sqlDR1 = null;
+                SqlDataReader sqlDR4 = null;
                 string TempQuery1 = "";
                 TempQuery1 = "DROP TABLE IF EXISTS ##" + NomeTabelaTemporaria(9999, sMesa);
                 SqlCommand SqlExecute3 = new SqlCommand(TempQuery1, sqlcon);
-                sqlDR1 = SqlExecute3.ExecuteReader();
-                sqlDR1.Close();
+                sqlDR4 = SqlExecute3.ExecuteReader();
+                sqlDR4.Close();
             }
             
         }
@@ -402,12 +503,14 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                     var mailBasketBody = sqlReadTransactions.GetValue(sqlReadTransactions.GetOrdinal("Mail_Basket_Body"));
                     var observations = sqlReadTransactions.GetValue(sqlReadTransactions.GetOrdinal("Observations"));
                     DataTable basket = basketDetails(transactionId);
+                    if (basket.Rows.Count == 0)
+                        continue;
                     var codigoCliente = basket.Rows[1]["CodigoCliente"];
                     saveFromCopyBDtoRealBD(basket,transactionId,amount,payment_Method,orderTime,codigoCliente, mailBasketBody,observations);
                     SqlDataReader updateProcessed = null;
                     try {
                         updateTransactionCon.Open();
-                        string update = "UPDATE TRANSACTIONS SET Processed = 1 WHERE TransactionId = " + transactionId;
+                        string update = "UPDATE TRANSACTIONS SET Processed = 1 WHERE TransactionId = '" + transactionId + "'";
                         SqlCommand sqlExcuteUpdate = new SqlCommand(update,updateTransactionCon);
                         updateProcessed = sqlExcuteUpdate.ExecuteReader();
                         updateProcessed.Close();
@@ -561,6 +664,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
 
         private string getEmailAdministradorSite() {
             SqlConnection emailAdminCon = new SqlConnection(connection);
+            emailAdminCon.Open();
             string queryForAdmin = @"SELECT ISNULL(NomeVariavel, '') AS NomeVariavel,Valor FROM istk18000 WITH (NOLOCK) WHERE (NomeVariavel IN ('sEmailAdministradorSite')) 
         and web=1 ORDER BY grupo ";
             SqlCommand SqlExecuteAdmin = new SqlCommand(queryForAdmin, emailAdminCon);
@@ -587,6 +691,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
 
         private string getClientName (object clientCode) {
             SqlConnection clientNameCon = new SqlConnection(connection);
+            clientNameCon.Open();
             string queryForName = "SELECT Nome FROM IStk0200 WITH(NOLOCK) WHERE Codigo = " + clientCode;
             SqlCommand SqlExecuteName = new SqlCommand(queryForName, clientNameCon);
             SqlDataReader sqlDRName = null;

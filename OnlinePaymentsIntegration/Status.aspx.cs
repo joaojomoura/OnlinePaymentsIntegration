@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
@@ -30,7 +31,8 @@ namespace OnlinePaymentsIntegration
         protected void Page_Load(object sender, EventArgs e) {
 
 
-
+            var paymentSuccess = false;
+            Thread.Sleep(3000);
             if (!IsPostBack) {
                 var URL = "https://spg.qly.site1.sibs.pt";
                 try {
@@ -41,7 +43,7 @@ namespace OnlinePaymentsIntegration
                     sqlcon.Close();
                 }
 
-                string query = @"SELECT ClientId, TransactionId FROM TRANSACTIONS WITH (NOLOCK) WHERE ClientId = '" + TransactionDataForForm.clientId +
+                string query = @"SELECT ClientId, TransactionId, Payment_Status FROM TRANSACTIONS WITH (NOLOCK) WHERE ClientId = '" + TransactionDataForForm.clientId +
                    "' AND TransactionId = '" + TransactionDataForForm.transactionID + "'";
                 SqlDataReader sqlDR = null;
                 bool transactionExist = false;
@@ -50,6 +52,8 @@ namespace OnlinePaymentsIntegration
                     sqlDR = SqlExecute0.ExecuteReader();
                     if (sqlDR.Read()) {
                         transactionExist = true;
+                        if (sqlDR.GetString(sqlDR.GetOrdinal("Payment_Status")).Equals("Success"))
+                            paymentSuccess = true;
                     }
                     sqlDR.Close();
 
@@ -67,6 +71,8 @@ namespace OnlinePaymentsIntegration
                 }
                 getRefMultibanco(getResponse);
                 sqlcon.Close();
+                if (paymentSuccess)
+                    StatusPayment.Text = "Pagamento com sucesso";
             }
 
         }

@@ -54,5 +54,4 @@
         </div>
     </form>
 </body>
-   <%=getStatus() %>
 </html>

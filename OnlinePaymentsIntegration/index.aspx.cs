@@ -52,7 +52,7 @@ namespace OnlinePaymentsIntegration
 
             //Saves to table Transaction
             SaveForInitialTransaction saveToTransaction = new SaveForInitialTransaction(1, "20220826","coiso",1);
-            saveToTransaction.saveToTransactionsBD();
+            saveToTransaction.saveToTransactionsBD(DateTime.Now.ToString(),"Pao Pao Pao Pao");
             saveToTransaction.saveToTempBDTest();
 
         }
