@@ -1,4 +1,5 @@
-﻿using OnlinePaymentsIntegration.SIBS.Exceptions;
+﻿using OnlinePaymentsIntegration.RedirectedFunctions;
+using OnlinePaymentsIntegration.SIBS.Exceptions;
 using OnlinePaymentsIntegration.SIBS.SDK;
 using System;
 using System.Collections.Generic;
@@ -29,9 +30,10 @@ namespace OnlinePaymentsIntegration
         private ResponseRequestCopyAndPay responseRequestCopyAndPay;
         private Dictionary<string, dynamic> getResponse;
         private SqlConnection sqlcon;
+        private FunctionsAfterPayment functionsAfterPayment;
         protected void Page_Load(object sender, EventArgs e) {
 
-
+            functionsAfterPayment = new FunctionsAfterPayment();
             
             if (!IsPostBack) {
                 var URL = "https://spg.qly.site1.sibs.pt";
@@ -59,7 +61,7 @@ namespace OnlinePaymentsIntegration
                     if (transactionExist) {
                         responseRequestCopyAndPay = new ResponseRequestCopyAndPay(URL, TransactionDataForForm.clientIdOnSibs, TransactionDataForForm.bearer, TransactionDataForForm.transactionID);
                         getResponse = responseRequestCopyAndPay.getResponseRequest();
-                        SaveDataFromGet(getResponse);
+                        functionsAfterPayment.SaveDataFromGet(getResponse,sqlcon);
                     }
                 }
                 catch (SqlException ex) {
@@ -68,7 +70,8 @@ namespace OnlinePaymentsIntegration
                             sqlDR.Close();
                     }
                 }
-                getRefMultibanco(getResponse);
+                if (getRefMultibanco(getResponse))
+                    referencias.Visible = true;
                 sqlcon.Close();
                 
             }
@@ -221,61 +224,16 @@ namespace OnlinePaymentsIntegration
             }
         }
 
-        private void getRefMultibanco(Dictionary<string, dynamic> checkoutData) {
+        private bool getRefMultibanco(Dictionary<string, dynamic> checkoutData) {
             if(checkoutData.ContainsKey("paymentReference")) {
                 Entidade = TransactionDataForForm.multibancoEntity;
                 Referencia = checkoutData["paymentReference"]["reference"];
                 Montante = TransactionDataForForm.amount;
-                referencias.Visible = true;
+                return true;
             }
+            return false;
         }
 
-        //[System.Web.Services.WebMethod]
-        protected string getStatus() {
-            SqlConnection sqlcon1 = null;
-            try {
-                sqlcon1 = new SqlConnection(@"Data Source=sql.inovanet.pt,3433;Initial Catalog=pizzarte_testes;User ID=pizzartenet;Password=qjaabsuf6969$;encrypt=true;trustServerCertificate=true");
-                sqlcon1.Open();
-            }
-            catch {
-                sqlcon1.Close();
-            }
-            string status = "";
-            string query = @"SELECT ClientId, TransactionId FROM TRANSACTIONS WITH (NOLOCK) WHERE ClientId = '" + TransactionDataForForm.clientId +
-                "' AND TransactionId = '" + TransactionDataForForm.transactionID + "'";
-            SqlDataReader sqlDR = null;
-            try {
-                SqlCommand SqlExecute0 = new SqlCommand(query, sqlcon1);
-                sqlDR = SqlExecute0.ExecuteReader();
-                if (sqlDR.Read()) {
-                    status = sqlDR.GetString(sqlDR.GetOrdinal("Payment_Status")).ToUpper();
-
-                }
-                sqlDR.Close();
-                if (!status.Equals("SUCCESS"))
-                    throw new Exception();
-                return status;
-            }
-            catch (SqlException ex) {
-                if (sqlDR != null) {
-                    if (sqlDR.IsClosed == false)
-                        sqlDR.Close();
-                }
-                sqlcon1.Close();
-                return "erro";
-            }
-            catch (Exception) {
-                if (sqlDR != null) {
-                    if (sqlDR.IsClosed == false)
-                        sqlDR.Close();
-                }
-                sqlcon1.Close();
-                StatusPayment.Text = "err";
-                return "erro";
-            }
-            finally {
-                sqlcon1.Close();
-            }    
-        }
+        
     }
 }

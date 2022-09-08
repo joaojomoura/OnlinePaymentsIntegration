@@ -30,7 +30,7 @@ namespace OnlinePaymentsIntegration
 
 
 
-            string query = @"SELECT  Payment_Status FROM TRANSACTIONS WITH (NOLOCK) WHERE TransactionId = '"
+            string query = @"SELECT  Payment_Status, Processed FROM TRANSACTIONS WITH (NOLOCK) WHERE TransactionId = '"
                    + getBody + "'";
             SqlDataReader sqlDR = null;
 
@@ -38,8 +38,9 @@ namespace OnlinePaymentsIntegration
                 SqlCommand SqlExecute0 = new SqlCommand(query, sqlcon);
                 sqlDR = SqlExecute0.ExecuteReader();
                 if (sqlDR.Read()) {
-
-                    if (sqlDR.GetString(sqlDR.GetOrdinal("Payment_Status")).Equals("Success"))
+                    var t = sqlDR.GetBoolean(sqlDR.GetOrdinal("Processed"));
+                    if (sqlDR.GetString(sqlDR.GetOrdinal("Payment_Status")).Equals("Success") &&
+                        sqlDR.GetBoolean(sqlDR.GetOrdinal("Processed")) == true)
                         Send = "YES";
                     else if (sqlDR.GetString(sqlDR.GetOrdinal("Payment_Status")).Equals("Declined"))
                         Send = "NO";

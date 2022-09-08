@@ -227,6 +227,7 @@
       <DependentUpon>index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RedirectedFunctions\FunctionsAfterPayment.cs" />
     <Compile Include="SaveToBD\SaveForInitialTransaction.cs" />
     <Compile Include="SaveToRealBD\SaveToRealBDMesa.cs" />
     <Compile Include="ServiceToUpdateAndSendToOriginalBD.aspx.cs">

@@ -44,7 +44,6 @@ namespace OnlinePaymentsIntegration
             var formContext = checkoutRequestCopyAndPay.getFormContext(checkoutRequest);
             checkoutText = checkoutRequestCopyAndPay.getReadAllJson;
             CheckoutResult.Text = checkoutText;
-            File.WriteAllText(@"C:\Projectos_Inovasis\OnlinePaymentsIntegration\file.txt",checkoutText);
             TransactionDataForForm.transactionID = transactionID;
             TransactionDataForForm.transactionSignature = signature;
             TransactionDataForForm.formContext = formContext;
