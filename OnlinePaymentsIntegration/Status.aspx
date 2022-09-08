@@ -4,10 +4,10 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <%--<script type="text/javascript">
+    <script type="text/javascript">
         window.onload = function () {
             // Set interval. Currently it is 1 sec.
-            setInterval(ShowMessage, 5000);
+            setInterval(getStatus, 3000);
         }
         function ShowMessage() {
 
@@ -15,8 +15,23 @@
         }
             function Success(result) { alert(result); }
             function Failure(error) { alert(error); }
+        function getStatus() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://localhost:44314/WebServiceToGetStatus");
+            var t = "<%=TransactiontoLabel%>";
+            xhr.send(t);
+            xhr.onload = function () {
+                var responseTextFromPost = xhr.responseText;
+                if (responseTextFromPost === "YES\r\n")
+                    document.getElementById("StatusPayment").innerHTML = "Pagamento com sucesso";
+                else if (responseTextFromPost === "NO\r\n")
+                    document.getElementById("StatusPayment").innerHTML = "Pagamento Rejeitado";
+                
+                
+            }
+        }
         
-    </script>--%>
+    </script>
     <title>Resultado do CopyanPay</title>
 </head>
 <body>
@@ -32,12 +47,14 @@
             <%=Pagamento %>
             <br />
             <%--<asp:ScriptManager ID='ScriptManager1' runat="server" EnablePageMethods="true" />--%>
-            <asp:Label ID="StatusPayment" runat="server" Text="Pagamento em espera"></asp:Label>
+            <asp:Label ID="StatusPayment" runat="server">Pagamento em espera</asp:Label>
+
             <br />
             <br />
             <%=Result %>
             <br />
-            <br />
+            <div runat="server" id="referencias" visible ="false">
+                <br />
             <br />
             Referencias Multibanco:
             <br />
@@ -49,6 +66,9 @@
             <br />
             <br />
             <br />
+
+            </div>
+            
             
            <%-- <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Button" />--%>
         </div>

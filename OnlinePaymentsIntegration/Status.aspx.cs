@@ -21,6 +21,7 @@ namespace OnlinePaymentsIntegration
         public string Referencia { get; set; }
         public string Montante { get; set; }
 
+        public string TransactiontoLabel { get; set; }
 
 
 
@@ -31,8 +32,7 @@ namespace OnlinePaymentsIntegration
         protected void Page_Load(object sender, EventArgs e) {
 
 
-            var paymentSuccess = false;
-            Thread.Sleep(3000);
+            
             if (!IsPostBack) {
                 var URL = "https://spg.qly.site1.sibs.pt";
                 try {
@@ -52,8 +52,7 @@ namespace OnlinePaymentsIntegration
                     sqlDR = SqlExecute0.ExecuteReader();
                     if (sqlDR.Read()) {
                         transactionExist = true;
-                        if (sqlDR.GetString(sqlDR.GetOrdinal("Payment_Status")).Equals("Success"))
-                            paymentSuccess = true;
+                        TransactiontoLabel = TransactionDataForForm.transactionID;
                     }
                     sqlDR.Close();
 
@@ -71,8 +70,7 @@ namespace OnlinePaymentsIntegration
                 }
                 getRefMultibanco(getResponse);
                 sqlcon.Close();
-                if (paymentSuccess)
-                    StatusPayment.Text = "Pagamento com sucesso";
+                
             }
 
         }
@@ -228,6 +226,7 @@ namespace OnlinePaymentsIntegration
                 Entidade = TransactionDataForForm.multibancoEntity;
                 Referencia = checkoutData["paymentReference"]["reference"];
                 Montante = TransactionDataForForm.amount;
+                referencias.Visible = true;
             }
         }
 
