@@ -17,17 +17,17 @@ namespace OnlinePaymentsIntegration
         CustomerInfo customer;
         private string url = "https://spg.qly.site1.sibs.pt/api/v1/payments";
         protected void Page_Load(object sender, EventArgs e) {
-            CustomerInfo customer = new CustomerInfo("Joao", "Moura");
-            customer.shippingAddress.street1 = "Rua 123";
-            customer.shippingAddress.street2 = "porta 2";
-            customer.shippingAddress.city = "Aveiro";
-            customer.shippingAddress.postcode = "3800-208";
+            CustomerInfo customer = new CustomerInfo("software", "joao.moura@inovasis.pt");
+            customer.shippingAddress.street1 = "rua";
+            customer.shippingAddress.street2 = "rua";
+            customer.shippingAddress.city = "aveiro";
+            customer.shippingAddress.postcode = "3440";
             customer.shippingAddress.country = "PT";
 
-            customer.billingAddress.street1 = "Rua 123";
-            customer.billingAddress.street2 = "porta 2";
-            customer.billingAddress.city = "Aveiro";
-            customer.billingAddress.postcode = "3800-208";
+            customer.billingAddress.street1 = "rua";
+            customer.billingAddress.street2 = "rua";
+            customer.billingAddress.city = "aveiro";
+            customer.billingAddress.postcode = "3440";
             customer.billingAddress.country = "PT";
             this.customer = customer;
 

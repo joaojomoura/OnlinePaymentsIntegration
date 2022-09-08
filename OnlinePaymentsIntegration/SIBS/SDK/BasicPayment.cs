@@ -130,7 +130,7 @@ namespace OnlinePaymentsIntegration.SIBS.SDK
         public virtual string dataForPaymentBasicwithMerchantTransactionId {
             get {
                 return "{\n\"merchant\": {\n" +
-                                "\"terminalId\": " + authentication.getTerminalId + ",\n" +
+                                "\"terminalId\": 56342,\n" +
                                 "\"channel\": \"web\",\n" +
                                 "\"merchantTransactionId\": \"My transaction -> " + authentication.getmerchantTransactionId + "\"\n" +
                                 "},\n" +
