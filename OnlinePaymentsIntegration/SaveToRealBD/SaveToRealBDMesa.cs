@@ -167,7 +167,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
             object orderTime, object codigoCliente, object mailBasketBody, object observations) {
             string sSqlCod = string.Empty;
             SqlDataReader sqlDrCod = null;
-
+            int metododepagamento = 0;
             string sMesa = "";
             SqlConnection sqlconCli = new SqlConnection(connection);
             sqlconCli.Open();
@@ -266,7 +266,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                                     encontroumesa = true;
 
                                     //Mudar aqui para o codigo criado posteriormente de cada metodo de pagamento
-                                    int metododepagamento = 0;
+                                    
                                     switch (payment_Method) {
                                         case "MBWAY":
                                             metododepagamento = 1;
@@ -349,9 +349,12 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                                 }
                             }
                             sqlDR3.Close();
-
+                            string referencia = string.Empty;
                             var cultureInfo = CultureInfo.GetCultureInfo("pt-PT");
-                            
+                            if(metododepagamento == 2) {
+                                getReferencias reff = new getReferencias();
+                                referencia = reff.getRef(TransactionDataForForm.transactionID);
+                            }
 
                             msg1.Subject = "Pizzarte";
                             msg1.IsBodyHtml = true;
@@ -364,8 +367,14 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                             // if (horalevantamento != Lb_infohoraprevista.Text)
                             msg1.Body += "<br/>Hora prevista para entrega: " + orderTime + "";
                             msg1.Body += "<br/><br/>";
-                            msg1.Body += mailBasketBody + "<br/>";
+                            msg1.Body += mailBasketBody.ToString().Replace("///","'") + "<br/>";
                             msg1.Body += "<b>Valor total:</b> " + String.Format(cultureInfo, "{0:C} ", amount);
+                            if(metododepagamento == 2) {
+                                msg1.Body = "<br/><br/> <b>Referencia para pagamento multibanco</b><br />";
+                                msg1.Body = " <b>Entidade: " + TransactionDataForForm.multibancoEntity + "</b><br />";
+                                msg1.Body = " <b>Referencia: " + referencia + "</b><br />";
+                                msg1.Body = " <b>Montante: " + String.Format(cultureInfo, "{0:C} ", amount) + "</b><br />";
+                            }
                             if (observations.ToString() != "")
                                 msg1.Body += "<br/><br/><b>Observações:</b> " + observations;
                             msg1.Body += "<br/>" + "<br/><br/><b>Pizzarte</b><br /><br />R.Engº Von Haffe, 27<br />3800-177 Aveiro, Portugal<br /><br /><a href=mailto:pizzarte@pizzarte.com>pizzarte@pizzarte.com</a><br/>(+351) 234 427 103";

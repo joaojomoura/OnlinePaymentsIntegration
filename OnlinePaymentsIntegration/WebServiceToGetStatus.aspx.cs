@@ -14,23 +14,25 @@ namespace OnlinePaymentsIntegration
         public string Send { get; set; }
         private SqlConnection sqlcon;
         protected void Page_Load(object sender, EventArgs e) {
-            try {
+           /* try {
                 sqlcon = new SqlConnection(@"Data Source=sql.inovanet.pt,3433;Initial Catalog=pizzarte_testes;User ID=pizzartenet;Password=qjaabsuf6969$;encrypt=true;trustServerCertificate=true");
                 sqlcon.Open();
             }
             catch {
                 sqlcon.Close();
-            }
+            }*/
 
 
             var re = Request;
             var body = Request.GetBufferedInputStream();
             StreamReader reader = new StreamReader(body);
             var getBody = reader.ReadToEnd();
+            
+            Send = "YES";
 
 
 
-            string query = @"SELECT  Payment_Status, Processed FROM TRANSACTIONS WITH (NOLOCK) WHERE TransactionId = '"
+            /*string query = @"SELECT  Payment_Status, Processed FROM TRANSACTIONS WITH (NOLOCK) WHERE TransactionId = '"
                    + getBody + "'";
             SqlDataReader sqlDR = null;
 
@@ -54,7 +56,7 @@ namespace OnlinePaymentsIntegration
                         sqlDR.Close();
                 }
             }
-            sqlcon.Close();
+            sqlcon.Close();*/
         }
     }
 }

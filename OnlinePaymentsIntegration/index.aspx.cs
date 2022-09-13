@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -17,6 +18,33 @@ namespace OnlinePaymentsIntegration
         CustomerInfo customer;
         private string url = "https://spg.qly.site1.sibs.pt/api/v1/payments";
         protected void Page_Load(object sender, EventArgs e) {
+
+
+
+            //var urlasass = "https://www.howsmyssl.com/a/check";
+            ////byte[] buffer = Encoding.ASCII.GetBytes(dataToSendWithPost);
+            //HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(urlasass);
+            //request.Method = "GET";
+            //request.Headers["Authorization"] = basicPayment.getBearer;
+            //request.Headers["X-IBM-Client-Id"] = basicPayment.getClientId;
+            //request.ContentType = "application/json";
+            //Stream PostData = request.GetRequestStream();
+            //PostData.Write(buffer, 0, buffer.Length);
+            //PostData.Close();
+            /*ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;*/
+
+            //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            //Stream dataStream = response.GetResponseStream();
+            //StreamReader reader = new StreamReader(dataStream);
+            //var t = reader.ReadToEnd();
+            /* using (HttpWebResponse response = (HttpWebResponse)request.GetResponse()) {
+                 Stream dataStream = response.GetResponseStream();
+                 StreamReader reader = new StreamReader(dataStream);
+                 var t = reader.ReadToEnd();
+             }*/
+
             CustomerInfo customer = new CustomerInfo("software", "joao.moura@inovasis.pt");
             customer.shippingAddress.street1 = "rua";
             customer.shippingAddress.street2 = "rua";
@@ -36,7 +64,7 @@ namespace OnlinePaymentsIntegration
 
         protected void ShowJsonButton_Click(object sender, EventArgs e) {
             checkoutRequestCopyAndPay = new CheckoutRequestCopyAndPay(url,AmountTextBox.Text, "EUR", TransactionDataForForm.clientIdOnSibs,
-               TransactionDataForForm.bearer,TransactionDataForForm.clientId, TransactionDataForForm.multibancoEntity,"20220826",customer);
+               TransactionDataForForm.bearer,TransactionDataForForm.clientId, TransactionDataForForm.multibancoEntity, "2679", customer);
             
             var checkoutRequest = checkoutRequestCopyAndPay.getCheckoutRequest();
             var transactionID = checkoutRequestCopyAndPay.getTransactionId(checkoutRequest);

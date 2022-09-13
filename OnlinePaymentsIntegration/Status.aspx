@@ -9,12 +9,7 @@
             // Set interval. Currently it is 1 sec.
             setInterval(getStatus, 3000);
         }
-        function ShowMessage() {
-
-            PageMethods.getStatus(Success, Failure);
-        }
-            function Success(result) { alert(result); }
-            function Failure(error) { alert(error); }
+        
         function getStatus() {
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "https://localhost:44314/WebServiceToGetStatus");
