@@ -14,7 +14,7 @@ namespace OnlinePaymentsIntegration
             SaveToRealBDMesa save = new SaveToRealBDMesa();
             save.checkTimeOfPendingTransaction();
             save.forEachTransactionNotProcessed();
-              
+            save.checkTimeOfWaitingTransaction();
         }
     }
 }

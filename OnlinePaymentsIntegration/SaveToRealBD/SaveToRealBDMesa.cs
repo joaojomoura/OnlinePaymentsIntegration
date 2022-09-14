@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
@@ -17,13 +18,16 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
         private SqlConnection sqlcon1;
         private ResponseRequestCopyAndPay responseRequest;
         private Dictionary<string, dynamic> getResponse;
+        //private string connection = ConfigurationManager.ConnectionStrings[Utils.sNomeLigacao].ConnectionString;
         private string connection = @"Data Source=sql.inovanet.pt,3433;Initial Catalog=pizzarte_testes;User ID=pizzartenet;Password=qjaabsuf6969$;encrypt=true;trustServerCertificate=true";
+        // Mudar aqui para site de producao
         private string URL = "https://spg.qly.site1.sibs.pt";
         public void checkTimeOfPendingTransaction() {
             DateTime presentTime = DateTime.Now;
             
             //START CONNECTION TO BD
             try {
+                //mudar aqui para a connection string da pagina principal
                 sqlcon = new SqlConnection(connection);
                 sqlcon.Open();
             }
@@ -72,6 +76,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                             transactionlocal.Rollback();
                             sqlcon.Close();
                             sqlcon1.Close();
+                            //File.WriteAllText(@"D:\Logs\PizzarteLogs\PendingUpdate.txt", "Update para gravar status na TransactionBD em Pending falhou na transacao " + transactionId + "\n erro: " + ex.Message);
 
                         }
                      //////////////////////////////////////////////////
@@ -79,13 +84,13 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                 }
                 sqlDR.Close();
             }
-            catch {
+            catch (Exception ex){
                 if (sqlDR != null) {
                     if (sqlDR.IsClosed == false)
                         sqlDR.Close();
                 }
                 sqlcon.Close();
-                
+                //File.WriteAllText(@"D:\Logs\PizzarteLogs\ReadPending.txt", "Ler TransactionBD falhou na transacao " + transactionId + "\n erro: " + ex.Message);
             }
             sqlcon.Close();
             
@@ -107,24 +112,23 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
             string transactionId = "";
 
             // GET THE PENDING TRANSACTIONS
-            string query = @"SELECT * FROM TRANSACTIONS WITH (NOLOCK) WHERE Payment_Status = 'Waiting'";
+            string query = @"SELECT TransactionId, Payment_Status FROM TRANSACTIONS WITH (NOLOCK) WHERE (Payment_Status = 'Pending') AND CAST(REPLACE(MBREF_ExpireDate,'T',' ') AS datetime2) < GETUTCDATE() ";
             SqlDataReader sqlDR = null;
             try {
                 SqlCommand SqlExecute0 = new SqlCommand(query, sqlcon);
                 sqlDR = SqlExecute0.ExecuteReader();
                 while (sqlDR.Read()) {
-                    expireDate = Convert.ToDateTime(sqlDR.GetString(sqlDR.GetOrdinal("Execution_End_Time"))).AddMinutes(5);
+                    //expireDate = Convert.ToDateTime(sqlDR.GetString(sqlDR.GetOrdinal("Execution_End_Time"))).AddMinutes(5);
                     transactionId = sqlDR.GetString(sqlDR.GetOrdinal("TransactionId"));
-                    if (sqlDR.GetString(sqlDR.GetOrdinal("Payment_Method")).Equals("REFERENCE")) {
+                    /*if (sqlDR.GetString(sqlDR.GetOrdinal("Payment_Method")).Equals("REFERENCE")) {
                         expireDate = Convert.ToDateTime(sqlDR.GetString(sqlDR.GetOrdinal("MBREF_ExpireDate")));
-                    }
+                    }*/
                     // IF THE TIME OF DATE IS LESSER THAN THE PRESENT GONNA UPDATE THE STATUS
-                    if (expireDate.CompareTo(presentTime) <= 0) {
-                        responseRequest = new ResponseRequestCopyAndPay(URL, TransactionDataForForm.clientIdOnSibs, TransactionDataForForm.bearer, transactionId);
-                        getResponse = responseRequest.getResponseRequest();
+                    //if (expireDate.CompareTo(presentTime) <= 0) {
+                        /*responseRequest = new ResponseRequestCopyAndPay(URL, TransactionDataForForm.clientIdOnSibs, TransactionDataForForm.bearer, transactionId);
+                        getResponse = responseRequest.getResponseRequest();*/
 
-                        string updateTransactionAfterTimeExpired = "UPDATE TRANSACTIONS SET Payment_Status = '" +
-                            getResponse["paymentStatus"] + "' WHERE TransactionId = '" + transactionId + "'";
+                        string updateTransactionAfterTimeExpired = "UPDATE TRANSACTIONS SET Payment_Status = 'Declined' WHERE TransactionId = '" + transactionId + "'";
                         sqlcon1 = new SqlConnection(connection);
                         sqlcon1.Open();
                         SqlTransaction transactionlocal = sqlcon1.BeginTransaction();
@@ -145,10 +149,11 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                             transactionlocal.Rollback();
                             sqlcon.Close();
                             sqlcon1.Close();
+                            //File.WriteAllText(@"D:\Logs\PizzarteLogs\UpdateWaiting.txt", "Update para gravar status na TransactionBD em WaitingTime falhou na transacao " + transactionId + "\n erro: " + ex.Message);
 
                         }
                         //////////////////////////////////////////////////
-                    }
+                    //}
                 }
                 sqlDR.Close();
             }
@@ -351,10 +356,10 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                             sqlDR3.Close();
                             string referencia = string.Empty;
                             var cultureInfo = CultureInfo.GetCultureInfo("pt-PT");
-                            if(metododepagamento == 2) {
+                            /*if(metododepagamento == 2) {
                                 getReferencias reff = new getReferencias();
                                 referencia = reff.getRef(TransactionDataForForm.transactionID);
-                            }
+                            }*/
 
                             msg1.Subject = "Pizzarte";
                             msg1.IsBodyHtml = true;
@@ -369,12 +374,12 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                             msg1.Body += "<br/><br/>";
                             msg1.Body += mailBasketBody.ToString().Replace("///","'") + "<br/>";
                             msg1.Body += "<b>Valor total:</b> " + String.Format(cultureInfo, "{0:C} ", amount);
-                            if(metododepagamento == 2) {
+                           /* if(metododepagamento == 2) {
                                 msg1.Body = "<br/><br/> <b>Referencia para pagamento multibanco</b><br />";
                                 msg1.Body = " <b>Entidade: " + TransactionDataForForm.multibancoEntity + "</b><br />";
                                 msg1.Body = " <b>Referencia: " + referencia + "</b><br />";
                                 msg1.Body = " <b>Montante: " + String.Format(cultureInfo, "{0:C} ", amount) + "</b><br />";
-                            }
+                            }*/
                             if (observations.ToString() != "")
                                 msg1.Body += "<br/><br/><b>Observações:</b> " + observations;
                             msg1.Body += "<br/>" + "<br/><br/><b>Pizzarte</b><br /><br />R.Engº Von Haffe, 27<br />3800-177 Aveiro, Portugal<br /><br /><a href=mailto:pizzarte@pizzarte.com>pizzarte@pizzarte.com</a><br/>(+351) 234 427 103";
@@ -421,6 +426,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                     }
                     catch (Exception ex) {
                         //falha no envio
+                        //File.WriteAllText(@"D:\Logs\PizzarteLogs\EnvioMail.txt", "Enviar mail falhou na transacao " + transactionId + "\n erro: " + ex.Message);
                     }
                     ////////////////////////////////////////
                 }
@@ -428,7 +434,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                 sqlconCli.Close();
 
             }
-            catch {
+            catch (Exception finalex){
                 if (sqlDR1 != null || sqlDRmesas != null || sqlDR0 != null) {
                     if (!sqlDR1.IsClosed)
                         sqlDR1.Close();
@@ -449,6 +455,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                 SqlCommand SqlExecute3 = new SqlCommand(TempQuery1, sqlcon);
                 sqlDR4 = SqlExecute3.ExecuteReader();
                 sqlDR4.Close();
+                //File.WriteAllText(@"D:\Logs\PizzarteLogs\CopiadeBDCOPYtoREALBD.txt", "Passagem de dados para a 47000 e para a 48000 falhou na transacao " + transactionId + "\n erro: " + finalex.Message);
             }
             
         }
@@ -496,6 +503,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
 
 
         public void forEachTransactionNotProcessed() {
+            string transactionId = string.Empty;
             SqlConnection sqlGetTransactionsCon = new SqlConnection(connection);
             SqlConnection updateTransactionCon = new SqlConnection(connection);
             sqlGetTransactionsCon.Open();
@@ -505,7 +513,7 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
             try {
                 sqlReadTransactions = sqlExecuteTransactions.ExecuteReader();
                 while (sqlReadTransactions.Read()) {
-                    string transactionId = sqlReadTransactions.GetString(sqlReadTransactions.GetOrdinal("TransactionId"));
+                    transactionId = sqlReadTransactions.GetString(sqlReadTransactions.GetOrdinal("TransactionId"));
                     var amount = sqlReadTransactions.GetValue(sqlReadTransactions.GetOrdinal("Amount_Value"));
                     var payment_Method = sqlReadTransactions.GetValue(sqlReadTransactions.GetOrdinal("Payment_Method"));
                     var orderTime = sqlReadTransactions.GetValue(sqlReadTransactions.GetOrdinal("DataHoraEntrega"));
@@ -525,22 +533,24 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                         updateProcessed.Close();
                         updateTransactionCon.Close();
                     }
-                    catch {
+                    catch (SqlException ex){
                         if (updateProcessed != null)
                             if (!updateProcessed.IsClosed)
                                 updateProcessed.Close();
                         updateTransactionCon.Close();
+                        //File.WriteAllText(@"D:\Logs\PizzarteLogs\UpdateProcessed.txt", "Update em Transactions em Processed falhou na transacao " + transactionId + "\n erro: " + ex.Message);
                     }
                 }
                 sqlReadTransactions.Close();
                 sqlGetTransactionsCon.Close();
             }
-            catch {
+            catch (SqlException ex){
                 if (sqlReadTransactions != null) {
                     if (sqlReadTransactions.IsClosed == false)
                         sqlReadTransactions.Close();
                 }
                 sqlGetTransactionsCon.Close();
+                //File.WriteAllText(@"D:\Logs\PizzarteLogs\ReadeachTransaction.txt", "Leitura de Transactions falhou na transacao " + transactionId + "\n erro: " + ex.Message);
             }
 
         }
@@ -607,12 +617,13 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                 sqlReadBasket.Close();
                 sqlGeBasketCon.Close();
             }
-            catch {
+            catch (Exception ex){
                 if (sqlReadBasket != null) {
                     if (sqlReadBasket.IsClosed == false)
                         sqlReadBasket.Close();
                 }
                 sqlGeBasketCon.Close();
+                //File.WriteAllText(@"D:\Logs\PizzarteLogs\ReadBasketDetails.txt", "Leitura de IStk48000_Copy falhou na transacao " + transactionId + "\n erro: " + ex.Message);
             }
 
             return basket;
@@ -713,12 +724,13 @@ namespace OnlinePaymentsIntegration.SaveToRealBD
                 sqlDRName.Close();
                 clientNameCon.Close();
             }
-            catch {
+            catch (Exception ex){
                 if (sqlDRName != null) {
                     if (!sqlDRName.IsClosed)
                         sqlDRName.Close();
                 }
                 clientNameCon.Close();
+                //File.WriteAllText(@"D:\Logs\PizzarteLogs\ReadClientName.txt", "Leitura de IStk0200 falhou no cliente " + clientCode + "\n erro: " + ex.Message);
             }
 
             return name;
