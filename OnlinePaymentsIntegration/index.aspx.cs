@@ -16,6 +16,7 @@ namespace OnlinePaymentsIntegration
         private CheckoutRequestCopyAndPay checkoutRequestCopyAndPay;
         private string checkoutText;
         CustomerInfo customer;
+        // insert in TransactionDataForForm class the data authentication necessary
         private string url = "https://spg.qly.site1.sibs.pt/api/v1/payments";
         protected void Page_Load(object sender, EventArgs e) {
 
